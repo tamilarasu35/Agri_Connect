@@ -1,0 +1,6 @@
+id,name,phone,location,crops,pin,registeredAt,language,trustScore
+F1001,Rajan Kumar,9876543210,"Thanjavur, Tamil Nadu","rice,sugarcane",1234,2026-01-15 08:30:00,tamil,85
+F1002,Selvi Murugan,9876543211,"Madurai, Tamil Nadu","tomato,chilli,onion",5678,2026-01-20 10:15:00,tamil,72
+F1003,Arjun Singh,9876543212,"Lucknow, Uttar Pradesh","wheat,potato,sugarcane",9012,2026-02-01 09:00:00,hindi,68
+F1004,Lakshmi Devi,9876543213,"Coimbatore, Tamil Nadu","coconut,banana,turmeric",3456,2026-02-10 11:30:00,tamil,90
+F1005,Ramesh Patel,9876543214,"Ahmedabad, Gujarat","cotton,groundnut,maize",7890,2026-02-15 07:45:00,english,55

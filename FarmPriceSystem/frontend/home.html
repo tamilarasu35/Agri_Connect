@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AgriConnect Home — Your personalized farming dashboard with live prices, weather, and alerts.">
+  <title>AgriConnect — Home</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+
+  <!-- Page Transition Overlay -->
+  <div class="page-transition" id="pageTransition"></div>
+
+  <!-- Floating Crop Emojis Background -->
+  <div class="crop-floats" id="cropFloats"></div>
+
+  <!-- ====== STICKY HEADER ====== -->
+  <header class="home-header" id="homeHeader">
+    <div class="header-brand">
+      <span class="brand-emoji">🌾</span>
+      <span class="text-gradient">AgriConnect</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn-logout" id="btnLogout">
+        <span data-lang="home.logout">Logout</span>
+      </button>
+      <button class="btn-dashboard" id="btnDashboard">
+        <div class="dashboard-dot"></div>
+        <span data-lang="home.dashboard_btn">Dashboard</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ====== HERO SECTION ====== -->
+  <section class="home-hero">
+    <!-- Background Image -->
+    <div class="hero-image-wrap">
+      <img src="assets/home-hero.png" alt="Lush Indian farmland at golden sunrise" id="heroImg">
+    </div>
+    <div class="hero-gradient-overlay"></div>
+    <div class="hero-warm-overlay"></div>
+
+    <!-- Greeting Content -->
+    <div class="hero-content">
+      <span class="greeting-emoji">🙏</span>
+      <h1 class="greeting-text" id="greetingText">
+        Welcome, <span class="greeting-name">Farmer!</span>
+      </h1>
+      <p class="greeting-location" id="greetingLocation">
+        <span class="loc-icon">📍</span> Your Location
+      </p>
+      <p class="greeting-time" id="greetingTime"></p>
+    </div>
+  </section>
+
+  <!-- ====== SUMMARY CARDS ====== -->
+  <section class="cards-section">
+    <div class="cards-grid">
+
+      <!-- Weather Card -->
+      <div class="summary-card" id="weatherCard">
+        <div class="card-icon weather">☀️</div>
+        <div class="card-title" data-lang="home.weather_title">TODAY'S WEATHER</div>
+        <div class="card-value" id="weatherTemp">--°C</div>
+        <div class="card-sub weather-condition" id="weatherCond">
+          <span>Loading...</span>
+        </div>
+      </div>
+
+      <!-- Top Price Card -->
+      <div class="summary-card" id="priceCard">
+        <div class="card-icon price">📈</div>
+        <div class="card-title" data-lang="home.top_price_title">TOP CROP PRICE</div>
+        <div class="card-value" id="topPriceValue">₹--/kg</div>
+        <div class="card-sub" id="topPriceCrop">Loading...</div>
+        <div class="price-trend up" id="topPriceTrend">--</div>
+      </div>
+
+      <!-- Alert Card -->
+      <div class="summary-card" id="alertCard">
+        <div class="card-icon alert">🛡️</div>
+        <div class="card-title" data-lang="home.alert_title">ALERT</div>
+        <div class="card-value" id="alertStatus">Checking...</div>
+        <div class="card-sub" id="alertMsg">Scanning for exploitation risks...</div>
+        <div class="alert-status">
+          <div class="alert-dot safe" id="alertDot"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ====== DASHBOARD CTA ====== -->
+  <section class="cta-section">
+    <button class="btn-cta-dashboard" id="btnCtaDashboard">
+      <span data-lang="home.go_dashboard">Go to Full Dashboard</span>
+      <span class="arrow">→</span>
+    </button>
+  </section>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="home-footer">
+    <p>🌾 AgriConnect — <span data-lang="home.footer">Empowering Indian Farmers</span></p>
+  </footer>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="js/lang.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/home.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AgriConnect — Live Mandi Prices, Exploitation Detection, and Crop Price Analysis for Indian Farmers.">
+  <title>AgriConnect — Live Mandi Prices</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/prices.css">
+</head>
+<body>
+
+  <!-- Page Transition -->
+  <div class="page-transition" id="pageTransition"></div>
+
+  <!-- ====== STICKY HEADER ====== -->
+  <header class="prices-header" id="pricesHeader">
+    <div class="header-left">
+      <button class="btn-back" id="btnBack" title="Back to Home">
+        <span>←</span>
+      </button>
+      <div class="header-brand">
+        <span class="brand-emoji">🌾</span>
+        <span class="text-gradient">AgriConnect</span>
+      </div>
+    </div>
+
+    <!-- Selected Crop Chip (sticky) -->
+    <div class="selected-chip" id="selectedChip" style="display:none;">
+      <span class="chip-emoji" id="selectedChipEmoji"></span>
+      <span id="selectedChipName"></span>
+      <button class="chip-clear" id="clearSelection" title="Clear">✕</button>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-dashboard" id="btnDashboard">
+        <div class="dashboard-dot"></div>
+        <span data-lang="home.dashboard_btn">Dashboard</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ====== MORNING REFRESH BANNER ====== -->
+  <div class="morning-banner" id="morningBanner" style="display:none;">
+    <span class="banner-icon">🌅</span>
+    <span id="morningBannerText" data-lang="prices.morning_refresh">Morning prices updated — today's mandi price is below</span>
+  </div>
+
+  <!-- Offline Banner -->
+  <div class="offline-banner" id="offlineBanner" style="display:none;">
+    <span class="banner-icon">📡</span>
+    <span id="offlineBannerText" data-lang="prices.offline_mode">Offline mode — showing last known price</span>
+  </div>
+
+  <!-- Daily Check Alert -->
+  <div class="daily-alert" id="dailyAlert" style="display:none;">
+    <span class="banner-icon">⏰</span>
+    <span id="dailyAlertText" data-lang="prices.daily_check">You haven't checked prices today. Check now!</span>
+    <button class="btn-sm btn-primary" id="dailyAlertDismiss">OK</button>
+  </div>
+
+  <!-- ====== MAIN LAYOUT ====== -->
+  <main class="prices-main">
+
+    <!-- LEFT PANEL — CROP SELECTOR -->
+    <aside class="crop-panel" id="cropPanel">
+      <h3 class="panel-title">
+        <span>🌿</span>
+        <span data-lang="prices.select_crop">Select Crop</span>
+      </h3>
+      <div class="crop-list" id="cropList">
+        <!-- Dynamically generated crop categories + subcategories -->
+      </div>
+    </aside>
+
+    <!-- RIGHT PANEL — PRICE CONTENT -->
+    <section class="price-content" id="priceContent">
+
+      <!-- SECTION 2 — QUANTITY SELECTOR -->
+      <div class="quantity-section" id="quantitySection" style="display:none;">
+        <h4 class="section-label" data-lang="prices.select_quantity">Select Quantity</h4>
+        <div class="quantity-row" id="quantityRow">
+          <button class="qty-btn" data-qty="1">1 kg</button>
+          <button class="qty-btn" data-qty="2">2 kg</button>
+          <button class="qty-btn" data-qty="5">5 kg</button>
+          <button class="qty-btn" data-qty="10">10 kg</button>
+          <button class="qty-btn" data-qty="25">25 kg</button>
+          <button class="qty-btn" data-qty="50">50 kg</button>
+          <button class="qty-btn" data-qty="100">100 kg</button>
+          <div class="qty-custom">
+            <input type="number" class="form-input qty-input" id="qtyCustom" min="1" max="10000"
+                   data-lang-placeholder="prices.custom_kg" placeholder="Custom kg">
+            <span>kg</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3 — MANDI SELECTOR -->
+      <div class="mandi-section" id="mandiSection" style="display:none;">
+        <h4 class="section-label" data-lang="prices.select_mandi">Select Mandi</h4>
+        <div class="mandi-grid" id="mandiGrid">
+          <!-- Dynamically generated mandi cards -->
+        </div>
+      </div>
+
+      <!-- CHECK PRICE BUTTON -->
+      <div class="check-price-section" id="checkPriceSection" style="display:none;">
+        <button class="btn btn-primary btn-lg btn-check-price" id="btnCheckPrice">
+          <span data-lang="prices.check_price">🔍 Check Price</span>
+        </button>
+      </div>
+
+      <!-- SECTION 4 — PRICE RESULT CARD -->
+      <div class="price-result" id="priceResult" style="display:none;">
+        <div class="price-result-card glass-card">
+          <div class="result-header">
+            <div class="result-crop">
+              <span class="result-emoji" id="resultEmoji"></span>
+              <div>
+                <h3 id="resultCropName">—</h3>
+                <p class="result-variety" id="resultVariety">—</p>
+              </div>
+            </div>
+            <div class="result-mandi">
+              <span class="loc-pin">📍</span>
+              <span id="resultMandi">—</span>
+            </div>
+          </div>
+
+          <div class="result-date" id="resultDate">
+            <span data-lang="prices.price_date">Price Date</span>: <span id="resultDateVal">—</span>
+          </div>
+
+          <div class="price-cards-row">
+            <div class="price-mini-card min-price">
+              <div class="price-label" data-lang="prices.min_price">Min Price</div>
+              <div class="price-val" id="priceMin">₹—</div>
+              <div class="price-unit">/kg</div>
+            </div>
+            <div class="price-mini-card modal-price">
+              <div class="price-label" data-lang="prices.modal_price">Modal Price</div>
+              <div class="price-val price-modal-val" id="priceModal">₹—</div>
+              <div class="price-unit">/kg</div>
+            </div>
+            <div class="price-mini-card max-price">
+              <div class="price-label" data-lang="prices.max_price">Max Price</div>
+              <div class="price-val" id="priceMax">₹—</div>
+              <div class="price-unit">/kg</div>
+            </div>
+          </div>
+
+          <!-- Total for selected quantity -->
+          <div class="total-section" id="totalSection">
+            <div class="total-label" data-lang="prices.total_value">Total Value</div>
+            <div class="total-calc">
+              <span id="totalQty">—</span> kg × ₹<span id="totalRate">—</span> = 
+              <span class="total-amount" id="totalAmount">₹—</span>
+            </div>
+          </div>
+
+          <!-- Price Color Indicator -->
+          <div class="price-indicator" id="priceIndicator">
+            <div class="indicator-bar" id="indicatorBar"></div>
+            <div class="indicator-labels">
+              <span class="ind-low" data-lang="prices.below_normal">Below Normal</span>
+              <span class="ind-avg" data-lang="prices.average">Average</span>
+              <span class="ind-good" data-lang="prices.good_price">Good Price</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5 — ALL CROPS PRICE SUMMARY TABLE -->
+      <div class="summary-section" id="summarySection">
+        <h3 class="section-title">
+          <span>📊</span>
+          <span data-lang="prices.all_crops_summary">All Crops — Today's Price Summary</span>
+        </h3>
+        <div class="summary-table-wrap">
+          <table class="summary-table" id="summaryTable">
+            <thead>
+              <tr>
+                <th data-lang="prices.th_crop">Crop</th>
+                <th data-lang="prices.th_min">Min ₹/kg</th>
+                <th data-lang="prices.th_max">Max ₹/kg</th>
+                <th data-lang="prices.th_modal">Modal ₹/kg</th>
+                <th data-lang="prices.th_trend">Trend</th>
+              </tr>
+            </thead>
+            <tbody id="summaryBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="prices-footer">
+    <p>🌾 AgriConnect — <span data-lang="home.footer">Empowering Indian Farmers</span></p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/lang.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/prices.js"></script>
+
+</body>
+</html>
