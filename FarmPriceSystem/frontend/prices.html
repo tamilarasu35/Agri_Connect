@@ -3,212 +3,188 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AgriConnect — Live Mandi Prices, Exploitation Detection, and Crop Price Analysis for Indian Farmers.">
-  <title>AgriConnect — Live Mandi Prices</title>
+  <title>AgriConnect — Live Mandi Prices & Exploitation Detector</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/prices.css">
 </head>
 <body>
 
-  <!-- Page Transition -->
-  <div class="page-transition" id="pageTransition"></div>
-
-  <!-- ====== STICKY HEADER ====== -->
+  <!-- Header -->
   <header class="prices-header" id="pricesHeader">
-    <div class="header-left">
-      <button class="btn-back" id="btnBack" title="Back to Home">
-        <span>←</span>
-      </button>
-      <div class="header-brand">
-        <span class="brand-emoji">🌾</span>
-        <span class="text-gradient">AgriConnect</span>
-      </div>
+    <div class="header-title-wrap">
+      <button class="btn-back" id="btnBack" aria-label="Go back">←</button>
+      <h1 class="header-title" data-lang="prices.header_title">Live Mandi Prices</h1>
     </div>
-
-    <!-- Selected Crop Chip (sticky) -->
-    <div class="selected-chip" id="selectedChip" style="display:none;">
-      <span class="chip-emoji" id="selectedChipEmoji"></span>
-      <span id="selectedChipName"></span>
-      <button class="chip-clear" id="clearSelection" title="Clear">✕</button>
-    </div>
-
     <div class="header-actions">
-      <button class="btn-dashboard" id="btnDashboard">
-        <div class="dashboard-dot"></div>
-        <span data-lang="home.dashboard_btn">Dashboard</span>
-      </button>
+      <!-- We can put language selector or user profile here if needed -->
     </div>
   </header>
 
-  <!-- Toast Container -->
-  <div class="toast-container" id="toastContainer"></div>
-
-  <!-- ====== MORNING REFRESH BANNER ====== -->
-  <div class="morning-banner" id="morningBanner" style="display:none;">
-    <span class="banner-icon">🌅</span>
-    <span id="morningBannerText" data-lang="prices.morning_refresh">Morning prices updated — today's mandi price is below</span>
-  </div>
-
-  <!-- Offline Banner -->
-  <div class="offline-banner" id="offlineBanner" style="display:none;">
-    <span class="banner-icon">📡</span>
-    <span id="offlineBannerText" data-lang="prices.offline_mode">Offline mode — showing last known price</span>
-  </div>
-
-  <!-- Daily Check Alert -->
-  <div class="daily-alert" id="dailyAlert" style="display:none;">
-    <span class="banner-icon">⏰</span>
-    <span id="dailyAlertText" data-lang="prices.daily_check">You haven't checked prices today. Check now!</span>
-    <button class="btn-sm btn-primary" id="dailyAlertDismiss">OK</button>
-  </div>
-
-  <!-- ====== MAIN LAYOUT ====== -->
-  <main class="prices-main">
-
-    <!-- LEFT PANEL — CROP SELECTOR -->
-    <aside class="crop-panel" id="cropPanel">
-      <h3 class="panel-title">
-        <span>🌿</span>
-        <span data-lang="prices.select_crop">Select Crop</span>
-      </h3>
-      <div class="crop-list" id="cropList">
-        <!-- Dynamically generated crop categories + subcategories -->
+  <main class="prices-container">
+    
+    <!-- Morning Price Alert Banner (Hidden by default) -->
+    <div id="morningBanner" class="morning-banner" style="display: none;">
+      <div class="banner-icon">🌅</div>
+      <div class="banner-text">
+        <strong id="bannerTitle" data-lang="prices.morning_title">காலை விலை புதுப்பிக்கப்பட்டது!</strong>
+        <p id="bannerDesc" data-lang="prices.morning_desc">Today's mandi prices are now live — check before your vendor arrives.</p>
       </div>
-    </aside>
+    </div>
 
-    <!-- RIGHT PANEL — PRICE CONTENT -->
-    <section class="price-content" id="priceContent">
+    <!-- 3-Column Filter Grid -->
+    <section class="filter-grid">
+      
+      <!-- Column 1: Crop Selection -->
+      <div class="filter-col">
+        <div class="col-header">
+          <span class="col-icon">🌱</span>
+          <span data-lang="prices.col1_title">1. Select Crop</span>
+        </div>
+        <div class="crop-list-scroll" id="cropList">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
 
-      <!-- SECTION 2 — QUANTITY SELECTOR -->
-      <div class="quantity-section" id="quantitySection" style="display:none;">
-        <h4 class="section-label" data-lang="prices.select_quantity">Select Quantity</h4>
-        <div class="quantity-row" id="quantityRow">
+      <!-- Column 2: Quantity Selection -->
+      <div class="filter-col">
+        <div class="col-header">
+          <span class="col-icon">⚖️</span>
+          <span data-lang="prices.col2_title">2. Select Quantity</span>
+        </div>
+        <div class="qty-grid" id="qtyGrid">
           <button class="qty-btn" data-qty="1">1 kg</button>
-          <button class="qty-btn" data-qty="2">2 kg</button>
           <button class="qty-btn" data-qty="5">5 kg</button>
           <button class="qty-btn" data-qty="10">10 kg</button>
-          <button class="qty-btn" data-qty="25">25 kg</button>
           <button class="qty-btn" data-qty="50">50 kg</button>
           <button class="qty-btn" data-qty="100">100 kg</button>
-          <div class="qty-custom">
-            <input type="number" class="form-input qty-input" id="qtyCustom" min="1" max="10000"
-                   data-lang-placeholder="prices.custom_kg" placeholder="Custom kg">
-            <span>kg</span>
-          </div>
+          <button class="qty-btn" data-qty="500">500 kg</button>
+        </div>
+        <div class="qty-custom-wrap">
+          <input type="number" class="qty-custom-input" id="qtyCustom" placeholder="." data-lang-placeholder="prices.custom_kg">
+          <span class="qty-custom-unit">kg</span>
         </div>
       </div>
 
-      <!-- SECTION 3 — MANDI SELECTOR -->
-      <div class="mandi-section" id="mandiSection" style="display:none;">
-        <h4 class="section-label" data-lang="prices.select_mandi">Select Mandi</h4>
-        <div class="mandi-grid" id="mandiGrid">
-          <!-- Dynamically generated mandi cards -->
+      <!-- Column 3: Mandi Selection -->
+      <div class="filter-col">
+        <div class="col-header">
+          <span class="col-icon">📍</span>
+          <span data-lang="prices.col3_title">3. Select Nearest Mandi</span>
         </div>
-      </div>
-
-      <!-- CHECK PRICE BUTTON -->
-      <div class="check-price-section" id="checkPriceSection" style="display:none;">
-        <button class="btn btn-primary btn-lg btn-check-price" id="btnCheckPrice">
-          <span data-lang="prices.check_price">🔍 Check Price</span>
+        <button class="btn-detect-mandi" id="btnDetectMandi">
+          <span class="col-icon">🎯</span> <span data-lang="prices.detect_nearest">Detect Nearest Mandi</span>
         </button>
-      </div>
-
-      <!-- SECTION 4 — PRICE RESULT CARD -->
-      <div class="price-result" id="priceResult" style="display:none;">
-        <div class="price-result-card glass-card">
-          <div class="result-header">
-            <div class="result-crop">
-              <span class="result-emoji" id="resultEmoji"></span>
-              <div>
-                <h3 id="resultCropName">—</h3>
-                <p class="result-variety" id="resultVariety">—</p>
-              </div>
-            </div>
-            <div class="result-mandi">
-              <span class="loc-pin">📍</span>
-              <span id="resultMandi">—</span>
-            </div>
+        <div class="mandi-search-container">
+          <div class="search-input-wrap">
+            <span class="search-icon-inside">🔍</span>
+            <input type="text" id="mandiSearchInput" class="form-input" placeholder="வேறு இடம் தேட — Search any location in Tamil Nadu" data-lang-placeholder="prices.mandi_search_placeholder">
           </div>
-
-          <div class="result-date" id="resultDate">
-            <span data-lang="prices.price_date">Price Date</span>: <span id="resultDateVal">—</span>
-          </div>
-
-          <div class="price-cards-row">
-            <div class="price-mini-card min-price">
-              <div class="price-label" data-lang="prices.min_price">Min Price</div>
-              <div class="price-val" id="priceMin">₹—</div>
-              <div class="price-unit">/kg</div>
-            </div>
-            <div class="price-mini-card modal-price">
-              <div class="price-label" data-lang="prices.modal_price">Modal Price</div>
-              <div class="price-val price-modal-val" id="priceModal">₹—</div>
-              <div class="price-unit">/kg</div>
-            </div>
-            <div class="price-mini-card max-price">
-              <div class="price-label" data-lang="prices.max_price">Max Price</div>
-              <div class="price-val" id="priceMax">₹—</div>
-              <div class="price-unit">/kg</div>
-            </div>
-          </div>
-
-          <!-- Total for selected quantity -->
-          <div class="total-section" id="totalSection">
-            <div class="total-label" data-lang="prices.total_value">Total Value</div>
-            <div class="total-calc">
-              <span id="totalQty">—</span> kg × ₹<span id="totalRate">—</span> = 
-              <span class="total-amount" id="totalAmount">₹—</span>
-            </div>
-          </div>
-
-          <!-- Price Color Indicator -->
-          <div class="price-indicator" id="priceIndicator">
-            <div class="indicator-bar" id="indicatorBar"></div>
-            <div class="indicator-labels">
-              <span class="ind-low" data-lang="prices.below_normal">Below Normal</span>
-              <span class="ind-avg" data-lang="prices.average">Average</span>
-              <span class="ind-good" data-lang="prices.good_price">Good Price</span>
-            </div>
-          </div>
+          <div id="mandiSearchResults" class="mandi-search-results hidden"></div>
         </div>
-      </div>
-
-      <!-- SECTION 5 — ALL CROPS PRICE SUMMARY TABLE -->
-      <div class="summary-section" id="summarySection">
-        <h3 class="section-title">
-          <span>📊</span>
-          <span data-lang="prices.all_crops_summary">All Crops — Today's Price Summary</span>
-        </h3>
-        <div class="summary-table-wrap">
-          <table class="summary-table" id="summaryTable">
-            <thead>
-              <tr>
-                <th data-lang="prices.th_crop">Crop</th>
-                <th data-lang="prices.th_min">Min ₹/kg</th>
-                <th data-lang="prices.th_max">Max ₹/kg</th>
-                <th data-lang="prices.th_modal">Modal ₹/kg</th>
-                <th data-lang="prices.th_trend">Trend</th>
-              </tr>
-            </thead>
-            <tbody id="summaryBody">
-              <!-- Dynamically populated -->
-            </tbody>
-          </table>
+        <div class="mandi-grid" id="mandiGrid">
+          <!-- Rendered by JS -->
         </div>
       </div>
 
     </section>
+
+    <!-- Floating Action Bar -->
+    <div class="selection-bar" id="checkPriceSection" style="display: none;">
+      <button class="btn-check-price" id="btnCheckPrice">
+        🔍 <span data-lang="prices.check_price">Fetch Live Price</span>
+      </button>
+    </div>
+
+    <!-- Results & Exploitation Detector Section (Hidden initially) -->
+    <section class="results-section" id="priceResult" style="display: none;">
+      
+      <!-- Left Col: Price Result & ML Strip -->
+      <div class="results-left-col">
+        <!-- Top: Price Result Card -->
+        <div class="glass-card" id="priceResultCard">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Bottom: ML Prediction Strip -->
+        <div class="glass-card ml-strip" id="mlPredictionStrip">
+          <div class="ml-header">
+            <span>📈</span> <strong data-lang="prices.ml_title">நாளைய கணிப்பு (Tomorrow's Prediction)</strong>
+          </div>
+          <div class="ml-body">
+            <div class="ml-stat">
+              <span data-lang="prices.predicted">Predicted:</span> <b id="mlPredictedPrice">₹0/kg</b>
+            </div>
+            <div class="ml-stat">
+              <span data-lang="prices.trend">Trend:</span> <span id="mlTrend" class="trend-indicator">→</span>
+            </div>
+            <div class="ml-stat ml-confidence-wrap">
+              <span data-lang="prices.confidence">Confidence:</span>
+              <div class="r2-ring" id="mlConfidenceRing"><span id="mlConfidenceText">0%</span></div>
+            </div>
+          </div>
+          <div class="ml-advice" id="mlAdviceBox">
+            <!-- Rendered by JS -->
+          </div>
+          <div class="ml-festival-alert" id="mlFestivalAlert" style="display:none;">
+            <!-- Festival alert rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Exploitation Detector -->
+      <div class="glass-card detector-card" id="detectorCard">
+        <h3 class="detector-title-large">
+          <span data-lang="prices.detector_main_title">நீங்கள் ஏமாற்றப்படுகிறீர்களா?</span><br>
+          <small data-lang="prices.detector_sub_title" style="font-size: 0.9rem; opacity: 0.8; font-weight: normal;">(Are you being cheated by the middleman?)</small>
+        </h3>
+        
+        <div class="detector-input-wrap">
+          <label class="detector-label" for="middlemanPrice" data-lang="prices.middleman_ask">தரகர் கொடுத்த விலை என்ன? (What price did the middleman offer you?)</label>
+          <div class="input-row" style="display: flex; gap: 10px; align-items: center; margin-top: 8px;">
+            <span class="detector-prefix" style="font-size: 1.2rem; font-weight: bold;">₹</span>
+            <input type="number" class="detector-input-large" id="middlemanPrice" placeholder="0" style="flex:1; padding: 10px; font-size: 1.2rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: #fff;">
+            <span class="detector-suffix" style="opacity: 0.7;">per kg</span>
+            <button class="detector-btn-large" id="btnCalculateLoss" style="padding: 10px 20px; font-size: 1.1rem; background: var(--primary); color: #fff; border: none; border-radius: 8px; cursor: pointer;">
+              <span data-lang="prices.calc_btn">Calculate →</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="detectorResults" style="display: none; margin-top: 20px;">
+          <!-- Will be filled by JS with ASCII style CSS layout -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Summary Table -->
+    <section class="summary-table-section">
+      <h3 class="summary-title">
+        <span>📊</span> 
+        <span data-lang="prices.summary_title">All Crops — Today's Price Summary</span>
+      </h3>
+      <div class="table-wrap">
+        <table class="mandi-table">
+          <thead>
+            <tr>
+              <th data-lang="prices.th_crop">Crop</th>
+              <th data-lang="prices.th_min">Min ₹/kg</th>
+              <th data-lang="prices.th_max">Max ₹/kg</th>
+              <th data-lang="prices.th_modal">Modal ₹/kg</th>
+              <th data-lang="prices.th_trend">Trend</th>
+            </tr>
+          </thead>
+          <tbody id="summaryBody">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
   </main>
 
-  <!-- ====== FOOTER ====== -->
-  <footer class="prices-footer">
-    <p>🌾 AgriConnect — <span data-lang="home.footer">Empowering Indian Farmers</span></p>
-  </footer>
-
-  <!-- Scripts -->
   <script src="js/lang.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/prices.js"></script>
-
 </body>
 </html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>AgriConnect — Crop Advisory & Intelligence</title>
+  <meta name="description" content="AgriConnect crop advisory: seasonal intelligence, festival price alerts, and market demand analysis for farmers.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+Tamil:wght@400;500;700&family=Yatra+One&display=swap" rel="stylesheet">
+  
+  <!-- Global CSS & Phase 7 CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/advisory.css">
+</head>
+<body class="page-advisory">
+
+  <!-- Shared Minimal Nav -->
+  <nav class="top-nav">
+    <div class="nav-left">
+      <button class="icon-btn" id="btnBack" onclick="window.location.href='dashboard.html'">
+        <span class="back-arrow">←</span>
+      </button>
+      <div class="logo">🌾 FarmPrice</div>
+    </div>
+    <div class="nav-center">
+      <span class="lang-badge" id="currentLangBadge">தமிழ்</span>
+    </div>
+    <div class="nav-right" id="navProfile">
+      <div class="avatar" id="navAvatar">மு</div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="advisory-header">
+    <h1 data-lang="adv.page_title">பயிர் ஆலோசனை மையம்</h1>
+    <p data-lang="adv.page_desc">Seasonal Intelligence & Market Demand</p>
+  </header>
+
+  <main class="adv-container">
+    
+    <!-- Festival Price Alert Banner -->
+    <div class="festival-alert" id="festivalAlertBanner">
+      <div class="alert-icon">🎉</div>
+      <div class="alert-content">
+        <h3 id="festAlertTitle" style="margin: 0; font-family: var(--font-display);">பொங்கல் — 8 நாட்களில்</h3>
+        <p style="margin: 5px 0;">
+          🎋 Sugarcane → Expected +40% price rise<br>
+          🌕 Turmeric → Expected +35% price rise<br>
+          🥥 Coconut → Expected +25% price rise
+        </p>
+        <p style="margin: 0; font-weight: bold;" data-lang="adv.fest_warn">இப்போது விற்காதீர்கள் — பொங்கலுக்கு பிறகு விற்கலாம்!</p>
+        <small data-lang="adv.fest_warn_en">(Do not sell now — wait for better price!)</small>
+      </div>
+    </div>
+
+    <!-- Top 5 Crops This Week -->
+    <section class="adv-card top-crops-card">
+      <h2 data-lang="adv.top_crops_title">இந்த வார சிறந்த 5 பயிர்கள்</h2>
+      <p class="subtitle" data-lang="adv.top_crops_subtitle">Top 5 Crops This Week</p>
+      
+      <div class="top-crops-list" id="topCropsContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- Seasonal Crop Calendar -->
+    <section class="adv-card calendar-card">
+      <h2 data-lang="adv.calendar_title">பருவகால பயிர் நாட்காட்டி</h2>
+      <p class="subtitle" data-lang="adv.calendar_subtitle">Seasonal Crop Calendar</p>
+      
+      <div class="calendar-scroll">
+        <!-- Jan -->
+        <div class="month-card active">
+          <div class="month-name">January</div>
+          <p>Best crops:</p>
+          <ul>
+            <li>🌕 Turmeric</li>
+            <li>🎋 Sugarcane</li>
+          </ul>
+        </div>
+        <!-- Feb -->
+        <div class="month-card">
+          <div class="month-name">February</div>
+          <p>Best crops:</p>
+          <ul>
+            <li>🌾 Wheat</li>
+            <li>🥜 Groundnut</li>
+          </ul>
+        </div>
+        <!-- March -->
+        <div class="month-card">
+          <div class="month-name">March</div>
+          <p>Best crops:</p>
+          <ul>
+            <li>🥭 Mango</li>
+            <li>🍅 Tomato</li>
+          </ul>
+        </div>
+        <!-- April -->
+        <div class="month-card">
+          <div class="month-name">April</div>
+          <p>Best crops:</p>
+          <ul>
+            <li>🌶️ Chilli</li>
+            <li>🧅 Onion</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Farmer's Crop Comparison -->
+    <section class="adv-card compare-card">
+      <h2 data-lang="adv.compare_title">உங்கள் பயிர் vs சந்தை தேவை</h2>
+      <p class="subtitle" data-lang="adv.compare_subtitle">Your crops vs Market demand</p>
+      
+      <div class="demand-row">
+        <span>🍅 Tomato</span>
+        <div class="progress-bar"><div class="fill" style="width: 85%; background: var(--green-mid);"></div></div>
+        <span class="demand-label text-green" data-lang="adv.demand_high">High Demand ✅</span>
+      </div>
+      <div class="demand-row">
+        <span>🧅 Onion</span>
+        <div class="progress-bar"><div class="fill" style="width: 60%; background: var(--saffron-mid);"></div></div>
+        <span class="demand-label" data-lang="adv.demand_med">Medium Demand →</span>
+      </div>
+      <div class="demand-row">
+        <span>🌾 Rice</span>
+        <div class="progress-bar"><div class="fill" style="width: 30%; background: var(--red-warn);"></div></div>
+        <span class="demand-label" style="color:var(--red-warn)" data-lang="adv.demand_low">Low Demand ⚠️</span>
+      </div>
+      <p style="margin-top: 15px; font-weight: bold; text-align: center; color: var(--green-deep);" data-lang="adv.demand_recommend">
+        இந்த வாரம் தக்காளி விற்பனைக்கு சரியான நேரம்!
+      </p>
+    </section>
+
+    <!-- Crowdsourced Local Price Report -->
+    <section class="adv-card crowd-card">
+      <h2 data-lang="adv.crowd_title">உங்கள் உள்ளூர் விலையை புகாரளிக்கவும்</h2>
+      <p class="subtitle" data-lang="adv.crowd_subtitle">Report your local sale price — helps other farmers</p>
+      
+      <div class="report-form">
+        <select class="form-input" id="reportCrop">
+          <option value="">-- Select Crop --</option>
+          <option value="tomato">Tomato</option>
+          <option value="onion">Onion</option>
+          <option value="banana">Banana</option>
+        </select>
+        <div class="input-with-prefix">
+          <span class="prefix">₹</span>
+          <input type="number" id="reportPrice" class="form-input" placeholder="Price per kg">
+        </div>
+        <input type="text" id="reportLocation" class="form-input" placeholder="Where (village/market)">
+        <button class="btn-primary w-100 mt-10" id="btnReport" data-lang="adv.btn_report">📢 Report Price</button>
+      </div>
+
+      <div class="recent-reports">
+        <strong data-lang="adv.recent_reports">Recent reports from Coimbatore:</strong>
+        <ul id="reportsList">
+          <li>"Tomato ₹16/kg at Palladam local" — 2 hrs ago</li>
+          <li>"Onion ₹10/kg at Pollachi" — 4 hrs ago</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CSC Operator Survey -->
+    <section class="adv-card csc-card">
+      <h2 data-lang="adv.csc_title">📋 இன்றைய உள்ளூர் மண்டி சர்வே</h2>
+      <p class="subtitle" data-lang="adv.csc_subtitle">[CSC Operator Only]</p>
+      
+      <div class="report-form">
+        <input type="text" id="cscMandi" class="form-input" placeholder="Mandi Name">
+        <select class="form-input" id="cscCrop">
+          <option value="">-- Select Crop --</option>
+          <option value="tomato">Tomato</option>
+          <option value="onion">Onion</option>
+          <option value="banana">Banana</option>
+          <option value="turmeric">Turmeric</option>
+        </select>
+        <div class="input-with-prefix">
+          <span class="prefix">₹</span>
+          <input type="number" id="cscPrice" class="form-input" placeholder="Today's price/kg">
+        </div>
+        <select class="form-input" id="cscQuality">
+          <option value="good">Good Quality</option>
+          <option value="average">Average Quality</option>
+          <option value="poor">Poor Quality</option>
+        </select>
+        <button class="btn-outline w-100 mt-10" id="btnSubmitSurvey" data-lang="adv.btn_survey">Submit Survey</button>
+      </div>
+    </section>
+
+    <!-- Plain Tamil Advice Card -->
+    <div class="wisdom-card">
+      <h3>
+        <span style="font-size:1.5rem">🌾</span>
+        <span data-lang="adv.wisdom_title">இந்த வார ஆலோசனை</span>
+      </h3>
+      <p class="wisdom-ta" data-lang="adv.wisdom_ta">"இந்த வாரம் மஞ்சள் விலை அதிகம். பொங்கல் நெருங்குவதால் விலை இன்னும் உயரும். இருப்பில் வைக்கவும்!"</p>
+      <p class="wisdom-en" data-lang="adv.wisdom_en">This week turmeric price is high. With Pongal approaching, price will rise further. Hold your stock!</p>
+    </div>
+
+  </main>
+
+  <script src="js/lang.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Route guard — redirect to login if no valid session
+    (function() {
+      var session = null;
+      try { session = JSON.parse(localStorage.getItem('fps_session')); } catch(e) {}
+      if (!session || !session.id) {
+        window.location.replace('index.html');
+      }
+    })();
+  </script>
+  <script src="js/advisory.js"></script>
+</body>
+</html>

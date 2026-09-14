@@ -1,0 +1,11 @@
+order_id,farmer_id,crop,variety,quantity_kg,price_per_kg,total,mandi,status,date,grade,payment,transport,buyer_id
+ORD001,F1710000000001,Tomato,Cherry Tomato,100,18,1800,Coimbatore,completed,2026-03-12,Grade A,Cash,Farmer delivers,""
+ORD002,F1710000000001,Onion,Red Onion,50,12,600,Salem,pending,2026-03-08,Grade A,Cash,Farmer delivers,""
+ORD003,F1710000000001,Rice,Sona Masuri,200,32,6400,Coimbatore,completed,2026-03-05,Grade A,Cash,Farmer delivers,""
+ORD004,F1710000000001,Banana,Nendran,75,22,1650,Madurai,completed,2026-02-28,Grade A,Cash,Farmer delivers,""
+ORD005,F1710000000001,Turmeric,Erode Turmeric,30,95,2850,Erode,cancelled,2026-02-20,Grade A,Cash,Farmer delivers,""
+ORD528860,Farmer,"Sugarcane","",1,38,38,"Chennai",listed,2026-06-20,"Grade B","UPI","Vehicle available",""
+ORD331444,Farmer,"Mango","",855,33,28215,"Chennai",listed,2026-06-20,"Grade B","UPI","Vehicle available",""
+ORD403401,Farmer,"Rice","",100,31,3100,"Coimbatore",listed,2026-06-20,"Grade B","UPI","Buyer pickup",""
+ORD305798,Farmer,"Sugarcane","",100,33,3300,"Coimbatore",listed,2026-06-20,"Grade B","UPI","Vehicle available",""
+ORD524879,F1785517994055,Tomato,Cherry,50,20,1000.00,Salem,listed,2026-07-31,Grade A,UPI,Farmer delivers,

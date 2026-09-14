@@ -1,0 +1,132 @@
+/* reports.css - Phase 8: Reports & Data Export */
+
+.page-reports {
+  background-color: #f7f9fa;
+  min-height: 100vh;
+  color: #111827;
+}
+
+.rep-header {
+  background: linear-gradient(135deg, #1A2E1A, #2A3E2A);
+  color: #fff;
+  padding: 40px 20px 20px;
+  text-align: center;
+}
+
+.rep-header h1 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  margin: 0 0 5px;
+}
+
+.rep-header p {
+  opacity: 0.8;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.rep-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 0 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rep-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.rep-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 15px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: 0.2s all ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.rep-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+}
+
+.rep-card.active {
+  border-color: var(--green-mid);
+  background: var(--green-light);
+}
+
+.rep-icon {
+  font-size: 2rem;
+}
+
+.rep-card strong {
+  font-size: 0.9rem;
+  color: var(--green-deep);
+}
+
+/* Report Viewer Area */
+.report-viewer {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  animation: fadeUp 0.3s ease;
+}
+
+.rep-print-area {
+  font-family: 'Courier New', monospace;
+  white-space: pre-wrap;
+  background: #fff;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-x: auto;
+  border: none;
+  color: #333;
+}
+
+.rep-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-top: 20px;
+  border-top: 1px dashed #eee;
+  padding-top: 20px;
+  gap: 10px;
+}
+
+.export-view-container {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  animation: fadeUp 0.3s ease;
+}
+
+.export-view-container h3 {
+  margin-top: 0;
+  color: var(--green-deep);
+}
+
+@media print {
+  .top-nav, .rep-header, .rep-grid, .rep-actions, .export-view-container {
+    display: none !important;
+  }
+  .report-viewer {
+    box-shadow: none;
+    padding: 0;
+  }
+  body, html {
+    background: #fff;
+  }
+}

@@ -1,4 +1,5 @@
-id,name,phone,location,businessType,pin,registeredAt,language,trustScore
-B2001,Fresh Mart,9988776601,"Chennai, Tamil Nadu",Retail,4321,2026-01-18 09:00:00,tamil,80
-B2002,Annapurna Wholesale,9988776602,"Bengaluru, Karnataka",Wholesale,8765,2026-01-25 14:30:00,english,75
-B2003,Kisan Bazaar,9988776603,"Delhi, Delhi",Retail,2109,2026-02-05 10:00:00,hindi,88
+id,name,phone,location,businessType,pin,registeredAt,language,trustScore,address
+B2001,Fresh Mart,9988776601,"Chennai, Tamil Nadu",Retail,4321,2026-01-18 09:00:00,tamil,80,
+B2002,Annapurna Wholesale,9988776602,"Bengaluru, Karnataka",Wholesale,8765,2026-01-25 14:30:00,english,75,
+B2003,Kisan Bazaar,9988776603,"Delhi, Delhi",Retail,2109,2026-02-05 10:00:00,hindi,88,
+B1781861513807,"Fresh Mart",9876543210,"Coimbatore",Retail,2260,2026-06-19 15:01:53,tamil,80,"123, Main Street, Coimbatore, 641001"

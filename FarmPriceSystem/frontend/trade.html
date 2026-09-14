@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>window.location.replace('prices.html');</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-lang="trade.page_title">AgriConnect — APMC Mandi Market & Crop Lot Submissions</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/trade.css">
+</head>
+<body class="trade-page">
+
+  <!-- [Top Navigation Bar] -->
+  <nav class="trade-nav frosted-glass">
+    <div class="nav-left">
+      <div class="logo-yatra saffron">FarmPrice</div>
+    </div>
+    <div class="nav-center">
+      <div class="lang-badge">
+        <span class="active">தமிழ்</span> / <span class="inactive">हिंदी</span> / <span class="inactive">English</span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="avatar-circle" id="userAvatar">TM</div>
+      <span class="avatar-name" id="userName">Tamilarasu</span>
+    </div>
+  </nav>
+
+  <!-- [Page Header] -->
+  <header class="trade-header deep-green-grad">
+    <div class="header-bg-circles"></div>
+    <div class="header-content">
+      <div class="badge-pill">⚡ <span data-lang="trade.no_middleman">அரசு ஒழுங்குமுறை மண்டிகள் — APMC Mandi Intelligence</span></div>
+      <h1 class="header-h1 yatra" data-lang="trade.hub_title">மண்டி விலை & பயிர் சமர்ப்பிப்பு</h1>
+      <h2 class="header-h2" data-lang="trade.hub_subtitle">விவசாயிகளுக்கு நேரடி APMC சந்தை விலை தகவல்கள்</h2>
+      <h3 class="header-h3" data-lang="trade.hub_sub_en">Direct APMC Mandi Benchmark Pricing & Stock Inventory</h3>
+      
+      <div class="stat-cards-row">
+        <div class="stat-card">
+          <strong id="statActiveListings">247</strong>
+          <span data-lang="trade.stat_listings">Active listings</span>
+        </div>
+        <div class="stat-card">
+          <strong id="statTraded">₹8.4L</strong>
+          <span data-lang="trade.stat_traded">Traded this week</span>
+        </div>
+        <div class="stat-card">
+          <strong id="statTrust">4.8★</strong>
+          <span data-lang="trade.stat_trust">Avg trust score</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- [2 Role Tabs] -->
+  <div class="tabs-wrapper">
+    <div class="tabs-container shadow-large">
+      <button class="tab-btn active" data-target="farmerPanel">
+        <span>👨‍🌾</span> 
+        <span data-lang="trade.tab_farmer">பயிர் பங்கு சமர்ப்பிப்பு / Crop Inventory & Mandi Rates</span>
+      </button>
+      <button class="tab-btn" data-target="ordersPanel">
+        <span>📋</span> 
+        <span data-lang="trade.tab_orders">என் பரிவர்த்தனைகள் / Submissions & History</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- [Tab Content Panel] -->
+  <main class="trade-main-content">
+    
+    <!-- ======================= -->
+    <!-- TAB 1 — FARMER PANEL    -->
+    <!-- ======================= -->
+    <div id="farmerPanel" class="content-panel active">
+      
+      <!-- Info Banner -->
+      <div class="info-banner saffron-banner">
+        <div class="info-icon">📌</div>
+        <div class="info-text">
+          <strong data-lang="trade.banner_lock_ta">மண்டி தரவுகளுடன் ஒப்பிடப்பட்ட நேரடி விலை ஒப்பீடு.</strong><br>
+          <span data-lang="trade.banner_lock_en">Your lot submissions are matched against live APMC Mandi benchmark rates.</span>
+        </div>
+      </div>
+
+      <!-- Crop Details Card -->
+      <div class="form-card">
+        <h3 class="card-title" data-lang="trade.crop_details">Crop Details</h3>
+        <div class="form-grid-2">
+          
+          <div class="form-group">
+            <label data-lang="trade.label_crop">Crop</label>
+            <select id="farmerCrop" class="form-input">
+              <option value="" disabled selected data-lang="trade.select_crop_placeholder">Select Crop...</option>
+              <option value="Tomato">🍅 Tomato — தக்காளி</option>
+              <option value="Onion">🧅 Onion — வெங்காயம்</option>
+              <option value="Rice">🌾 Rice — அரிசி</option>
+              <option value="Wheat">🌿 Wheat — கோதுமை</option>
+              <option value="Sugarcane">🎋 Sugarcane — கரும்பு</option>
+              <option value="Cotton">☁️ Cotton — பருத்தி</option>
+              <option value="Banana">🍌 Banana — வாழைப்பழம்</option>
+              <option value="Mango">🥭 Mango — மாம்பழம்</option>
+              <option value="Potato">🥔 Potato — உருளைக்கிழங்கு</option>
+              <option value="Chilli">🌶️ Chilli — மிளகாய்</option>
+              <option value="Groundnut">🥜 Groundnut — கடலை</option>
+              <option value="Coconut">🥥 Coconut — தேங்காய்</option>
+              <option value="Turmeric">🌕 Turmeric — மஞ்சள்</option>
+              <option value="Maize">🌽 Maize — மக்காசோளம்</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label data-lang="trade.label_variety">Variety</label>
+            <input type="text" id="farmerVariety" class="form-input" placeholder="e.g. Sona Masuri, Cherry...">
+          </div>
+
+          <!-- Mandi Price Display -->
+          <div class="form-group full-width" id="mandiPriceDisplayContainer" style="display:none; grid-column:1 / -1; background:rgba(0,0,0,0.15); padding:16px; border-radius:12px; border:1px dashed rgba(255,255,255,0.1); margin-top:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <div>
+                <span style="font-size:0.85rem; color:var(--text-secondary); font-weight:600;" data-lang="trade.current_mandi_price">Current Mandi Price</span>
+                <div id="mandiPriceVal" style="font-size:1.6rem; font-weight:bold; color:var(--color-good); margin-top:4px; font-family:var(--font-display);">₹0/kg</div>
+              </div>
+              <div style="text-align:right;">
+                <span style="font-size:0.75rem; color:var(--text-muted); display:block;" id="mandiPriceTimestamp">Last updated: Today</span>
+                <span style="font-size:0.75rem; background:rgba(255,255,255,0.08); padding:4px 10px; border-radius:10px; color:#fff; display:inline-block; margin-top:4px;">Source: Agmarknet API</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label data-lang="trade.label_quantity">Quantity (kg)</label>
+            <input type="number" id="farmerQty" class="form-input" placeholder="Amount in kg">
+          </div>
+
+          <div class="form-group">
+            <label data-lang="trade.label_negotiated_price">Your Selling Price (Negotiated)</label>
+            <div class="input-with-prefix">
+              <span class="prefix">₹</span>
+              <input type="number" id="farmerPrice" class="form-input large-number" placeholder="Enter your price per kg">
+            </div>
+            <span id="farmerPriceWarning" style="color:var(--saffron); font-size:0.8rem; display:none; margin-top:4px; font-weight:600;"></span>
+          </div>
+
+          <div class="form-group">
+            <label>Min. Negotiation Price (₹/kg)</label>
+            <div class="input-with-prefix">
+              <span class="prefix">₹</span>
+              <input type="number" id="farmerMinNegPrice" class="form-input large-number" placeholder="0">
+            </div>
+            <small class="field-hint">Lowest price you'll accept from buyers</small>
+          </div>
+
+          <div class="form-group full-width" style="grid-column: 1 / -1;">
+            <label data-lang="trade.label_date">Harvest/Available date</label>
+            <input type="date" id="farmerDate" class="form-input">
+          </div>
+        </div>
+      </div>
+
+      <!-- Crop Photo Upload -->
+      <div class="form-card">
+        <h3 class="card-title">📷 Crop Photo <span class="card-title-sub">(Optional — increases buyer trust by 3×)</span></h3>
+        <div class="photo-upload-zone" id="photoUploadZone">
+          <input type="file" id="cropPhotoInput" accept="image/*" style="display:none">
+          <div id="photoPlaceholder" class="photo-placeholder-content">
+            <div class="photo-upload-icon">📷</div>
+            <strong>Click or drag &amp; drop a photo of your crop</strong>
+            <span>JPG, PNG, WEBP — Max 5 MB</span>
+          </div>
+          <img id="cropPhotoPreview" class="crop-photo-preview" style="display:none" alt="Crop preview">
+          <button type="button" id="btnRemovePhoto" class="btn-remove-photo" style="display:none">✕ Remove Photo</button>
+        </div>
+      </div>
+
+      <!-- Crop Grade Selector -->
+      <div class="form-card">
+        <h3 class="card-title" data-lang="trade.grade_title">Crop Grade</h3>
+        <div class="grade-selector-row">
+          <button class="grade-btn active" data-grade="A">
+            <span class="g-icon">🏆</span> <span data-lang="trade.grade_a">Grade A — Premium</span>
+          </button>
+          <button class="grade-btn" data-grade="B">
+            <span class="g-icon">✅</span> <span data-lang="trade.grade_b">Grade B — Standard</span>
+          </button>
+          <button class="grade-btn" data-grade="C">
+            <span class="g-icon">📦</span> <span data-lang="trade.grade_c">Grade C — Economy</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Location & Logistics Card -->
+      <div class="form-card">
+        <h3 class="card-title" data-lang="trade.logistics_title">Location & Logistics</h3>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label data-lang="trade.label_village">Village</label>
+            <input type="text" id="farmerVillage" class="form-input" readonly>
+          </div>
+          <div class="form-group">
+            <label data-lang="trade.label_district">District</label>
+            <select id="farmerDistrict" class="form-input">
+              <option value="Coimbatore">Coimbatore</option>
+              <option value="Salem">Salem</option>
+              <option value="Madurai">Madurai</option>
+              <option value="Trichy">Trichy</option>
+              <option value="Erode">Erode</option>
+              <option value="Dindigul">Dindigul</option>
+              <option value="Chennai">Chennai</option>
+              <option value="Tirunelveli">Tirunelveli</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="toggle-row">
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggleTransport">
+            <span class="slider round"></span>
+          </label>
+          <span class="toggle-label" data-lang="trade.toggle_transport">என்னிடம் வாகனம் உள்ளது — I have my own transport vehicle</span>
+        </div>
+
+        <div class="toggle-row">
+          <label class="toggle-switch">
+            <input type="checkbox" id="togglePickup">
+            <span class="slider round"></span>
+          </label>
+          <span class="toggle-label" data-lang="trade.toggle_pickup">வீட்டிலிருந்து எடுத்துச் செல்லலாம் — Buyer can pick up from my farm</span>
+        </div>
+      </div>
+
+      <!-- Payment Method Card -->
+      <div class="form-card">
+        <h3 class="card-title" data-lang="trade.payment_title">Payment Method</h3>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label data-lang="trade.label_payment_mode">Payment Option</label>
+            <select id="farmerPayment" class="form-input">
+              <option value="Cash" data-lang="trade.pay_cash">💵 Cash at Delivery</option>
+              <option value="UPI" data-lang="trade.pay_upi">📱 UPI/Bank Transfer</option>
+              <option value="Both" data-lang="trade.pay_both">🏦 Both Accepted</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-lang="trade.label_upi">UPI ID (Optional)</label>
+            <input type="text" id="farmerUpi" class="form-input" placeholder="e.g. 98xxxxxx21@okbiz">
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Note Card -->
+      <div class="form-card">
+        <h3 class="card-title" data-lang="trade.notes_title">Additional Note (Optional)</h3>
+        <textarea id="farmerNotes" class="form-textarea" placeholder="e.g. Organic, pesticide-free, freshly harvested this morning..." rows="3"></textarea>
+      </div>
+
+      <!-- Price Lock Banner -->
+      <div class="price-lock-banner">
+        <div class="lock-icon">🔒</div>
+        <div class="lock-text">
+          <strong data-lang="trade.lock_promise_ta">விலை பூட்டல் உறுதிமொழி</strong><br>
+          <span data-lang="trade.lock_desc_ta">ஒப்புதலுக்கு பிறகு விலை மாற்ற முடியாது — இரு தரப்பிலும்.</span><br>
+          <span data-lang="trade.lock_desc_en">Price Lock is enforced by the system.</span>
+        </div>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div class="submit-actions">
+        <button class="btn-primary-full green-gradient" id="btnPostListing">
+          📢 <span data-lang="trade.btn_post">பட்டியலை பதிவிடவும் — Post My Listing</span>
+        </button>
+        <button class="btn-outline-full" id="btnSaveDraft">
+          💾 <span data-lang="trade.btn_draft">வரைவாக சேமிக்க — Save as Draft</span>
+        </button>
+      </div>
+
+      <!-- Success State (Hidden initially) -->
+      <div id="listingSuccess" class="success-state hidden">
+        <div class="icon-large">✅</div>
+        <h2 data-lang="trade.success_title">பட்டியல் பதிவிடப்பட்டது!</h2>
+        <p data-lang="trade.success_desc">Your listing is now live. Buyers in your district will be notified.</p>
+        <div class="txn-pill" id="listingTxnId">TXN-2026-0000</div>
+        <p class="txn-sub" data-lang="trade.success_sub">Save this Transaction ID as proof</p>
+      </div>
+
+    </div>
+
+
+
+    <!-- ======================= -->
+    <!-- TAB 3 — MY ORDERS       -->
+    <!-- ======================= -->
+    <div id="ordersPanel" class="content-panel">
+      
+      <!-- Trust Chips -->
+      <div class="trust-chips-row">
+        <div class="trust-chip"><span class="t-icon">🔒</span> <span data-lang="trade.trust_otp">OTP Protected</span></div>
+        <div class="trust-chip"><span class="t-icon">⭐</span> <span data-lang="trade.trust_rating">Rating System</span></div>
+        <div class="trust-chip"><span class="t-icon">🏛️</span> <span data-lang="trade.trust_csc">CSC Verified</span></div>
+        <div class="trust-chip"><span class="t-icon">📋</span> <span data-lang="trade.trust_price_lock">Price Locked</span></div>
+      </div>
+
+      <!-- Savings Summary -->
+      <div class="savings-card">
+        <div class="savings-metrics-row">
+          <div class="metric-box">
+            <strong class="green-text">₹12,700</strong>
+            <span data-lang="trade.savings_total">Total earned (direct trade)</span>
+          </div>
+          <div class="metric-box">
+            <strong class="saffron-text">₹4,200</strong>
+            <span data-lang="trade.savings_amount">Saved vs middleman this month</span>
+          </div>
+        </div>
+        <div class="savings-message">
+          🌟 <strong data-lang="trade.savings_msg_ta">மண்டி நேரடி விலைகள் மூலம் ₹4,200 அதிகம் கிடைத்தது இந்த மாதம்!</strong><br>
+          <span data-lang="trade.savings_msg_en">You gained ₹4,200 more this month with APMC Mandi direct rates.</span>
+        </div>
+      </div>
+
+      <!-- Transactions -->
+      <h3 class="section-heading" data-lang="trade.tx_heading">Transaction History</h3>
+      <div class="tx-history-list" id="txHistoryList">
+        <!-- JS rendered -->
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ======================= -->
+  <!-- MODALS                  -->
+  <!-- ======================= -->
+  
+  <!-- Order Modal -->
+  <div class="modal-overlay hidden" id="orderModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 data-lang="trade.modal_order_title">ஆர்டர் செய்யுங்கள் — Place Order</h3>
+        <button class="btn-close-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="moPhotoContainer"></div>
+        <div class="modal-info-box soil-box">
+          <strong id="moCropName">Crop Name</strong><br>
+          <span id="moFarmerName" class="soil-light-text">Farmer Name</span>
+        </div>
+        
+        <div class="form-group mt-16">
+          <label data-lang="trade.label_quantity">Quantity (kg)</label>
+          <input type="number" id="moQty" class="form-input" placeholder="0">
+        </div>
+        <div class="form-group mt-16">
+          <label data-lang="trade.label_offered_price">Offered price (₹/kg)</label>
+          <div class="input-with-prefix">
+            <span class="prefix">₹</span>
+            <input type="number" id="moPrice" class="form-input large-number" placeholder="0">
+          </div>
+        </div>
+        
+        <div class="live-calculator">
+          <span data-lang="trade.calc_total">மொத்த மதிப்பு:</span> <strong id="moTotal" class="green-text">₹0</strong>
+        </div>
+
+        <div class="modal-alert-warn mt-16">
+          🔒 <span data-lang="trade.modal_price_lock">Once farmer accepts, this price cannot be changed.</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" data-lang="trade.btn_cancel">ரத்து Cancel</button>
+        <button class="btn-confirm green-solid" id="btnConfirmOrder">✅ <span data-lang="trade.btn_confirm_order">ஆர்டர் உறுதிசெய்யவும் — Confirm Order</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Success Modal (replaces order modal) -->
+  <div class="modal-overlay hidden" id="orderSuccessModal">
+    <div class="modal-content text-center">
+      <div class="emoji-56">🎉</div>
+      <h2 data-lang="trade.order_sent_ta">ஆர்டர் அனுப்பப்பட்டது!</h2>
+      <p style="color:var(--text-secondary); margin-bottom: 24px;" data-lang="trade.order_sent_en">Order sent to farmer. You'll receive confirmation shortly.</p>
+      
+      <div class="txn-pill" id="orderTxnId">TXN-2026-0000</div>
+      
+      <div class="otp-protect-box mt-24">
+        <strong>🔒 OTP Delivery Protection:</strong>
+        <p>You will receive a 4-digit OTP. Share it with the farmer ONLY after you receive and verify the goods.</p>
+        <p style="margin-top:8px;">Payment releases after OTP confirmation.</p>
+      </div>
+
+      <button class="btn-primary-full mt-24" onclick="document.getElementById('orderSuccessModal').classList.add('hidden')">
+        Done ✓
+      </button>
+    </div>
+  </div>
+
+  <!-- Negotiate Modal -->
+  <div class="modal-overlay hidden" id="negotiateModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 data-lang="trade.modal_neg_title">Negotiate</h3>
+        <button class="btn-close-modal">✕</button>
+      </div>
+      <div class="modal-body">
+          <div id="mnPhotoContainer"></div>
+          <div class="farmer-price-display">
+            <span data-lang="trade.farmer_price_ta">விவசாயியின் விலை:</span> <strong class="green-text">₹<span id="mnCurrentPrice">18</span>/kg</strong>
+          </div>
+          <!-- Min negotiation floor -->
+          <div class="mn-floor-row" style="display:none; margin-top:12px; background:#FFF8E1; padding:10px 14px; border-radius:8px; font-size:0.9rem;">
+            🚧 <strong>Floor Price:</strong> Farmer will not go below <strong id="mnMinFloor" style="color:#C62828">₹0/kg</strong>
+          </div>
+        
+        <div class="form-group mt-16">
+          <label data-lang="trade.counter_price_ta">உங்கள் புதிய விலை (₹/kg)</label>
+          <div class="input-with-prefix">
+            <span class="prefix">₹</span>
+            <input type="number" id="mnCounterPrice" class="form-input large-number" placeholder="0">
+          </div>
+        </div>
+
+        <div class="form-group mt-16">
+          <label data-lang="trade.msg_to_farmer">Message to Farmer</label>
+          <textarea id="mnNote" class="form-textarea" placeholder="e.g. We are a regular hotel buyer, can offer ₹16 for bulk order..." rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" data-lang="trade.btn_cancel">ரத்து</button>
+        <button class="btn-confirm saffron-solid" id="btnSendOffer">📨 <span data-lang="trade.btn_send_offer">முன்மொழிவை அனுப்பு — Send Offer</span></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/trade.js"></script>
+</body>
+</html>

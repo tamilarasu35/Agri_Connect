@@ -85,6 +85,8 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
 }
 
 body {
@@ -92,8 +94,15 @@ body {
   background: var(--bg-dark);
   color: var(--text-primary);
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
   min-height: 100vh;
+}
+
+/* Trade page overrides (light cream theme) */
+body.trade-page {
+  background: #FAFAF7;
+  color: #111827;
 }
 
 a {
@@ -116,7 +125,7 @@ h2,
 h3,
 h4 {
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.4;
   color: var(--text-primary);
 }
 

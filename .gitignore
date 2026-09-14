@@ -1,0 +1,20 @@
+# Java Compiled Binaries & Build Output
+*.class
+out/
+backend/out/
+FarmPriceSystem/backend/out/
+FarmPriceSystem/out/
+
+# Logs & Temporary Files
+*.log
+logs/
+backend/logs/
+FarmPriceSystem/backend/logs/
+FarmPriceSystem/logs/
+.tempmediaStorage/
+scratch/
+
+# Node / OS Files
+node_modules/
+.DS_Store
+Thumbs.db

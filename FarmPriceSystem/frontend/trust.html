@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>AgriConnect — Trust & Fraud Prevention</title>
+  <meta name="description" content="AgriConnect Trust System: OTP delivery confirmation, farmer ratings, and APMC mandi verification.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+Tamil:wght@400;500;700&family=Yatra+One&display=swap" rel="stylesheet">
+  
+  <!-- Global CSS & Phase 6 Specific CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/trust.css">
+</head>
+<body class="page-trust">
+
+  <!-- Shared Minimal Nav -->
+  <nav class="top-nav">
+    <div class="nav-left">
+      <button class="icon-btn" id="btnBack" onclick="window.location.href='dashboard.html'">
+        <span class="back-arrow">←</span>
+      </button>
+      <div class="logo">🌾 FarmPrice</div>
+    </div>
+    <div class="nav-center">
+      <span class="lang-badge" id="currentLangBadge">தமிழ்</span>
+    </div>
+    <div class="nav-right" id="navProfile">
+      <div class="avatar" id="navAvatar">மு</div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="trust-header">
+    <h1 data-lang="trust.page_title">பாதுகாப்பு & நம்பகத்தன்மை</h1>
+    <p data-lang="trust.page_desc">Trust & Fraud Prevention System</p>
+  </header>
+
+  <main class="trust-container">
+    
+    <!-- OTP Delivery Confirmation -->
+    <section class="trust-card otp-card">
+      <div class="card-title" data-lang="trust.otp_title">ORDER DELIVERY CONFIRMATION</div>
+      <div class="card-subtitle" data-lang="trust.otp_subtitle">ஆர்டர் டெலிவரி உறுதிப்படுத்தல்</div>
+      
+      <div class="order-summary-box">
+        <h3 id="otpCropName">Cherry Tomato — 200 kg</h3>
+        <p><span data-lang="trust.buyer">Merchant:</span> <strong id="otpBuyerName">Annapoorna Traders</strong></p>
+        <p><span data-lang="trust.amount">Amount:</span> <strong id="otpAmount" class="text-green">₹3,600</strong></p>
+      </div>
+
+      <div class="otp-box">
+        <label data-lang="trust.your_otp">உங்கள் OTP:</label>
+        <div class="otp-digits">
+          <input type="text" class="otp-input" maxlength="1" value="4" readonly>
+          <input type="text" class="otp-input" maxlength="1" value="8" readonly>
+          <input type="text" class="otp-input" maxlength="1" value="2" readonly>
+          <input type="text" class="otp-input" maxlength="1" value="1" readonly>
+        </div>
+        <div class="otp-warning">
+          <span class="warn-icon">📌</span>
+          <div>
+            <strong data-lang="trust.otp_warn_ta">பொருட்களை சரிபார்த்த பிறகு மட்டுமே மண்டி வணிகருக்கு OTP கொடுங்கள்!</strong><br>
+            <small data-lang="trust.otp_warn_en">Give OTP to mandi merchant ONLY after verifying goods!</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rating System -->
+    <section class="trust-card rating-card">
+      <h2 data-lang="trust.rate_title">விவசாயியை மதிப்பிடுங்கள் (Rate this farmer)</h2>
+      <div class="star-rating" id="starRating">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+      <textarea id="ratingComment" class="form-input" placeholder="Optional comment..." style="min-height:80px; margin-top:10px;"></textarea>
+      <button class="btn-primary mt-15 w-100" id="btnSubmitRating" data-lang="trust.submit_rating">Submit Rating</button>
+    </section>
+
+    <!-- Trust Score Dashboard -->
+    <section class="trust-card score-card">
+      <h2 data-lang="trust.score_title">உங்கள் நம்பகத்தன்மை மதிப்பெண்</h2>
+      <p class="subtitle" data-lang="trust.score_subtitle">Your Trust Score</p>
+      
+      <div class="score-display">
+        <div class="stars-gold">★★★★★</div>
+        <div class="score-number">4.9 <small>/ 5.0</small></div>
+      </div>
+
+      <div class="score-stats">
+        <div class="stat-row">
+          <span data-lang="trust.stat_orders">Completed orders:</span>
+          <strong>47</strong>
+        </div>
+        <div class="stat-row">
+          <span data-lang="trust.stat_delivery">On-time delivery:</span>
+          <strong>100%</strong>
+        </div>
+        <div class="stat-row">
+          <span data-lang="trust.stat_otp">OTP success rate:</span>
+          <strong>100%</strong>
+        </div>
+        <div class="stat-row">
+          <span data-lang="trust.stat_fraud">Fraud reports:</span>
+          <strong>0</strong>
+        </div>
+        <div class="stat-row">
+          <span data-lang="trust.stat_member">Member since:</span>
+          <strong>Jan 2025</strong>
+        </div>
+        <div class="stat-row">
+          <span data-lang="trust.stat_csc">CSC Verified:</span>
+          <strong class="text-green">✅ Yes</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Transaction Receipt -->
+    <section class="trust-card receipt-card">
+      <div class="receipt-ascii" id="receiptContent">
+╔═══════════════════════════════════════╗
+║     🌾 FARMPRICE TRANSACTION RECEIPT  ║
+╠═══════════════════════════════════════╣
+║ Transaction ID : TXN-2026-8841        ║
+║ Date & Time    : 15 Mar 2026, 9:42 AM ║
+╠═══════════════════════════════════════╣
+║ FARMER         : Murugan              ║
+║ Village        : Palladam, Coimbatore ║
+║ MERCHANT       : Annapoorna Traders   ║
+╠═══════════════════════════════════════╣
+║ Crop           : Cherry Tomato        ║
+║ Grade          : A (Premium)          ║
+║ Quantity       : 200 kg               ║
+║ Price per kg   : ₹18                  ║
+║ TOTAL AMOUNT   : ₹3,600               ║
+╠═══════════════════════════════════════╣
+║ Payment        : Cash at Delivery     ║
+║ OTP Confirmed  : ✅ Yes               ║
+║ CSC Verified   : ✅ Yes               ║
+╠═══════════════════════════════════════╣
+║ Farmer Rating  : ★★★★★ (4.9)      ║
+║ Merchant Rating: ★★★★☆ (4.2)      ║
+╚═══════════════════════════════════════╝
+      </div>
+      <div class="receipt-actions gap-10">
+        <button class="btn-outline" id="btnPrint" data-lang="trust.print">🖨️ Print Receipt</button>
+        <button class="btn-outline" id="btnSavePdf" data-lang="trust.save_pdf">💾 Save as PDF</button>
+        <button class="btn-primary" id="btnCopyId" data-lang="trust.copy_id" onclick="window.location.href='reports.html'">📋 View Reports →</button>
+      </div>
+    </section>
+
+    <!-- Blacklist System Rules -->
+    <section class="trust-card blacklist-card">
+      <div class="shield-icon">🛡️</div>
+      <h3 data-lang="trust.blacklist_title">Blacklist System Active</h3>
+      <ul class="blacklist-rules">
+        <li><strong>Rule 1:</strong> 3 failed OTP attempts on same order → account flagged</li>
+        <li><strong>Rule 2:</strong> 2 fraud reports from different users → account blacklisted</li>
+        <li><strong>Rule 3:</strong> Rating drops below 2.0 after minimum 5 orders → review flagged</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <script src="js/lang.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Route guard — redirect to login if no valid session
+    (function() {
+      var session = null;
+      try { session = JSON.parse(localStorage.getItem('fps_session')); } catch(e) {}
+      if (!session || !session.id) {
+        window.location.replace('index.html');
+      }
+    })();
+  </script>
+  <script src="js/trust.js"></script>
+</body>
+</html>

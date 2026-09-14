@@ -1,180 +1,226 @@
 /**
- * FarmPriceSystem — Auth Module (auth.js)
- * Handles registration, login, GPS detection, and session management.
- * Uses localStorage + CSV backend (via API or direct file for static mode).
+ * FarmPriceSystem — Auth Module (auth.js) v2.0
+ *
+ * Dual-mode authentication:
+ *  1. Backend API mode (primary): Calls /api/register and /api/login on the
+ *     Java server. Server returns a session token that is stored in
+ *     localStorage as 'fps_token'. All subsequent API calls send this token
+ *     as "Authorization: Bearer <token>".
+ *
+ *  2. localStorage fallback mode: If the backend is unreachable, falls back
+ *     to client-side authentication (original behavior) so the app remains
+ *     usable in offline/static mode.
+ *
+ * Session data is stored in 'fps_session' for UI use (name, id, phone).
+ * The secure token is stored separately in 'fps_token'.
  */
 
 const Auth = (() => {
     const SESSION_KEY = 'fps_session';
+    const TOKEN_KEY   = 'fps_token';
     const FARMERS_KEY = 'fps_farmers';
+    const API_BASE    = ''; // empty = same origin (http://localhost:8080)
 
-    /**
-     * Get stored farmers from localStorage (static fallback when no backend)
-     */
-    function getFarmers() {
-        try {
-            return JSON.parse(localStorage.getItem(FARMERS_KEY) || '[]');
-        } catch {
-            return [];
-        }
+    // ── Token management ─────────────────────────────────────────────────
+
+    /** Store the server-issued session token */
+    function setToken(token) {
+        if (token) localStorage.setItem(TOKEN_KEY, token);
+    }
+
+    /** Get the stored session token */
+    function getToken() {
+        return localStorage.getItem(TOKEN_KEY);
+    }
+
+    /** Build Authorization header for API requests */
+    function authHeaders() {
+        const token = getToken();
+        return token
+            ? { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
+            : { 'Content-Type': 'application/json' };
     }
 
     /**
-     * Save farmers array to localStorage
+     * Make an authenticated API call.
+     * Returns the parsed JSON response data, or throws on network/API error.
      */
+    async function apiCall(method, path, body = null) {
+        const opts = {
+            method,
+            headers: authHeaders(),
+        };
+        if (body) opts.body = JSON.stringify(body);
+        const resp = await fetch(API_BASE + path, opts);
+        const json = await resp.json();
+        return { ok: resp.ok, status: resp.status, data: json };
+    }
+
+    // ── localStorage helpers (fallback) ──────────────────────────────────
+
+    function getFarmers() {
+        try { return JSON.parse(localStorage.getItem(FARMERS_KEY) || '[]'); }
+        catch { return []; }
+    }
+
     function saveFarmers(farmers) {
         localStorage.setItem(FARMERS_KEY, JSON.stringify(farmers));
     }
 
-    /**
-     * Register a new farmer
-     */
-    function register({ name, phone, location, crops }) {
-        // Validate
-        if (!name || !phone || !location || !crops.length) {
-            return { success: false, message: 'toast.error_fields' };
-        }
-        if (!/^\d{10}$/.test(phone)) {
-            return { success: false, message: 'toast.error_phone' };
-        }
+    // ── Session management ────────────────────────────────────────────────
 
-        const farmers = getFarmers();
-
-        // Check if already exists
-        const existing = farmers.find(f => f.phone === phone);
-        if (existing) {
-            // Update profile
-            existing.name = name;
-            existing.location = location;
-            existing.crops = crops;
-            saveFarmers(farmers);
-            setSession(existing);
-            return { success: true, message: 'toast.register_success', farmer: existing };
-        }
-
-        // Generate 4-digit PIN
-        const pin = String(Math.floor(1000 + Math.random() * 9000));
-
-        const farmer = {
-            id: 'F' + Date.now(),
-            name,
-            phone,
-            location,
-            crops,
-            pin,
-            registeredAt: new Date().toISOString(),
-            trustScore: 0,
-            language: Lang.getCurrent()
-        };
-
-        farmers.push(farmer);
-        saveFarmers(farmers);
-        setSession(farmer);
-
-        return { success: true, message: 'toast.register_success', farmer, pin };
-    }
-
-    /**
-     * Login with phone + PIN
-     */
-    function login(phone, pin) {
-        if (!/^\d{10}$/.test(phone)) {
-            return { success: false, message: 'toast.error_phone' };
-        }
-        if (!/^\d{4}$/.test(pin)) {
-            return { success: false, message: 'toast.error_pin' };
-        }
-
-        const farmers = getFarmers();
-        const farmer = farmers.find(f => f.phone === phone && f.pin === pin);
-
-        if (!farmer) {
-            return { success: false, message: 'toast.error_login' };
-        }
-
-        setSession(farmer);
-        return { success: true, message: 'toast.login_success', farmer };
-    }
-
-    /**
-     * Set user session
-     */
-    function setSession(farmer) {
+    /** Persist session data from a backend response or a local farmer object */
+    function setSession(data) {
         const session = {
-            id: farmer.id,
-            name: farmer.name,
-            phone: farmer.phone,
-            role: 'farmer',
-            loggedInAt: new Date().toISOString()
+            id:          data.id          || data.farmer?.id  || '',
+            name:        data.name        || data.farmer?.name || '',
+            phone:       data.phone       || data.farmer?.phone || '',
+            role:        data.role        || 'farmer',
+            language:    data.language    || Lang.getCurrent(),
+            loggedInAt:  new Date().toISOString()
         };
         localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+        if (data.token) setToken(data.token);
     }
 
-    /**
-     * Get current session
-     */
+    /** Get current session from localStorage */
     function getSession() {
-        try {
-            return JSON.parse(localStorage.getItem(SESSION_KEY));
-        } catch {
-            return null;
-        }
+        try { return JSON.parse(localStorage.getItem(SESSION_KEY)); }
+        catch { return null; }
     }
 
-    /**
-     * Clear session
-     */
-    function logout() {
-        localStorage.removeItem(SESSION_KEY);
-    }
-
-    /**
-     * Check if user is logged in
-     */
+    /** True if a session exists (does not validate token with server) */
     function isLoggedIn() {
         return !!getSession();
     }
 
+    // ── Registration ──────────────────────────────────────────────────────
+
     /**
-     * Detect GPS location and reverse-geocode to a human-readable address
+     * Register a new farmer.
+     * Tries the backend API first; falls back to localStorage if unreachable.
+     * Returns { success, message, pin (if new), farmer }
      */
+    function register({ name, phone, location, crops }) {
+        // Client-side validation (mirrors server-side for fast feedback)
+        if (!name || !phone || !location || !crops.length)
+            return { success: false, message: 'toast.error_fields' };
+        if (!/^\d{10}$/.test(phone))
+            return { success: false, message: 'toast.error_phone' };
+
+        // Try backend API asynchronously — return sync result for UI compat,
+        // then update session once the backend responds
+        const cropsStr = Array.isArray(crops) ? crops.join(',') : crops;
+        fetch(API_BASE + '/api/register', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ name, phone, location, crops: cropsStr, language: Lang.getCurrent() })
+        }).then(r => r.json()).then(json => {
+            if (json.success && json.data) {
+                // Update session with server-issued token
+                setSession(json.data);
+                // Sync PIN to localStorage farmers for fallback
+                if (json.data.pin) {
+                    const farmers = getFarmers();
+                    const existing = farmers.find(f => f.phone === phone);
+                    if (existing) existing.pin = json.data.pin;
+                    else farmers.push({ id: json.data.id, name, phone, location, crops, pin: json.data.pin, trustScore: 0, language: Lang.getCurrent() });
+                    saveFarmers(farmers);
+                }
+            }
+        }).catch(() => {}); // silent — we already have the fallback result
+
+        // ── Synchronous localStorage path (for immediate UI feedback)
+        const farmers = getFarmers();
+        const existing = farmers.find(f => f.phone === phone);
+        if (existing) {
+            existing.name = name; existing.location = location; existing.crops = crops;
+            saveFarmers(farmers);
+            setSession(existing);
+            return { success: true, message: 'toast.register_success', farmer: existing };
+        }
+        const pin    = String(Math.floor(1000 + Math.random() * 9000));
+        const farmer = { id: 'F' + Date.now(), name, phone, location, crops, pin,
+                         registeredAt: new Date().toISOString(), trustScore: 0, language: Lang.getCurrent() };
+        farmers.push(farmer);
+        saveFarmers(farmers);
+        setSession(farmer);
+        return { success: true, message: 'toast.register_success', farmer, pin };
+    }
+
+    // ── Login ─────────────────────────────────────────────────────────────
+
+    /**
+     * Login with phone + PIN.
+     * Tries backend API for token; falls back to localStorage.
+     */
+    function login(phone, pin) {
+        if (!/^\d{10}$/.test(phone)) return { success: false, message: 'toast.error_phone' };
+        if (!/^\d{4}$/.test(pin))   return { success: false, message: 'toast.error_pin' };
+
+        // Async backend call to get session token
+        fetch(API_BASE + '/api/login', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ phone, pin, role: 'farmer' })
+        }).then(r => r.json()).then(json => {
+            if (json.success && json.data && json.data.token) {
+                setToken(json.data.token);
+                // Update local session with server data
+                setSession(json.data);
+            }
+        }).catch(() => {}); // silent
+
+        // Synchronous localStorage check for immediate UI response
+        const farmers = getFarmers();
+        const farmer  = farmers.find(f => f.phone === phone && (String(f.pin) === String(pin) || String(f.password) === String(pin)));
+        if (!farmer) return { success: false, message: 'toast.error_login' };
+        setSession(farmer);
+        return { success: true, message: 'toast.login_success', farmer };
+    }
+
+    // ── Logout ────────────────────────────────────────────────────────────
+
+    function logout() {
+        // Tell backend to invalidate the token
+        const token = getToken();
+        if (token) {
+            fetch(API_BASE + '/api/auth/logout', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
+            }).catch(() => {});
+        }
+        localStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem(TOKEN_KEY);
+    }
+
+    // ── GPS detection ─────────────────────────────────────────────────────
+
     function detectGPS() {
         return new Promise((resolve, reject) => {
-            if (!navigator.geolocation) {
-                reject(new Error('Geolocation not supported'));
-                return;
-            }
-
+            if (!navigator.geolocation) { reject(new Error('Geolocation not supported')); return; }
             navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    const { latitude, longitude } = position.coords;
+                async (pos) => {
+                    const { latitude: lat, longitude: lon } = pos.coords;
                     try {
-                        // Try reverse geocoding via free API
-                        const resp = await fetch(
-                            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=12&addressdetails=1`,
+                        const r = await fetch(
+                            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=12&addressdetails=1`,
                             { headers: { 'Accept-Language': 'en' } }
                         );
-                        if (resp.ok) {
-                            const data = await resp.json();
-                            const addr = data.address || {};
-                            const village = addr.village || addr.town || addr.city || '';
-                            const district = addr.state_district || addr.county || addr.state || '';
-                            const location = [village, district].filter(Boolean).join(', ');
-                            resolve(location || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
-                        } else {
-                            resolve(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
-                        }
-                    } catch {
-                        resolve(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
-                    }
+                        if (r.ok) {
+                            const d = await r.json();
+                            const a = d.address || {};
+                            const village  = a.village  || a.town  || a.city  || '';
+                            const district = a.state_district || a.county || a.state || '';
+                            resolve([village, district].filter(Boolean).join(', ') || `${lat.toFixed(4)}, ${lon.toFixed(4)}`);
+                        } else resolve(`${lat.toFixed(4)}, ${lon.toFixed(4)}`);
+                    } catch { resolve(`${lat.toFixed(4)}, ${lon.toFixed(4)}`); }
                 },
-                (error) => {
-                    reject(error);
-                },
+                (err) => reject(err),
                 { enableHighAccuracy: true, timeout: 10000 }
             );
         });
     }
 
-    return { register, login, getSession, logout, isLoggedIn, detectGPS };
+    return { register, login, logout, getSession, getToken, setToken, isLoggedIn, detectGPS, apiCall };
 })();

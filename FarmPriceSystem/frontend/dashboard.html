@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AgriConnect Companion — Farmer Command Center and APMC Mandi Market Intelligence for Tamil Nadu Farmers.">
+  <title data-lang="companion.app_title">AgriConnect Companion — Farmer Command Center & APMC Mandi Intelligence</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/styles.css?v=4.0">
+  <link rel="stylesheet" href="css/dashboard.css?v=4.0">
+  <link rel="stylesheet" href="css/companion.css?v=4.0">
+</head>
+<body class="companion-body">
+
+  <!-- ========================================================================== -->
+  <!-- SECTION 1: GLOBAL HEADER & NAVIGATION                                     -->
+  <!-- ========================================================================== -->
+  <header class="companion-header">
+    <!-- Zone 1: Logo & Branding -->
+    <div class="header-zone-branding">
+      <div class="brand-logo-fallback">🌾</div>
+      <div class="brand-text-container">
+        <h1 class="brand-title" data-lang="companion.app_title">AgriConnect Companion</h1>
+        <span class="brand-subtitle" data-lang="companion.sub_title">பல்லடம் உழவர் கட்டளை மையம்</span>
+      </div>
+    </div>
+
+    <!-- Zone 2: Navigation Links -->
+    <nav class="header-zone-nav" aria-label="Main Navigation">
+      <a href="dashboard.html" class="nav-link-item active">Dashboard</a>
+      <a href="prices.html" class="nav-link-item">Market Prices</a>
+      <a href="#crops-section" class="nav-link-item">My Crops</a>
+      <a href="advisory.html" class="nav-link-item">Advisory</a>
+      <a href="reports.html" class="nav-link-item">Reports</a>
+    </nav>
+
+    <!-- Zone 3: Controls & Profile -->
+    <div class="header-zone-controls">
+      <!-- Language Selector -->
+      <div class="lang-selector-group" role="group" aria-label="Language Selector">
+        <button type="button" class="lang-btn active" data-lang-btn="tamil">தமிழ்</button>
+        <button type="button" class="lang-btn" data-lang-btn="english">English</button>
+        <button type="button" class="lang-btn" data-lang-btn="hindi">हिंदी</button>
+      </div>
+
+      <!-- Search / Browse button -->
+      <button type="button" class="search-browse-btn" onclick="document.getElementById('marketplaceSearchInput')?.focus()">
+        <span>🔍</span>
+        <span>Search/Browse</span>
+      </button>
+
+      <!-- Enhanced User Profile & Auth Control Widget -->
+      <div class="user-profile-auth-widget">
+        <div class="user-profile-card">
+          <div class="avatar-wrapper">
+            <div class="avatar-circle" id="headerAvatar">T</div>
+            <div class="online-dot" title="Online Status: Active"></div>
+          </div>
+          <div class="user-text-info">
+            <div style="display:flex; align-items:center; gap:4px;">
+              <span class="user-name" id="headerName">Tamilarasu</span>
+              <button type="button" onclick="promptEditFarmerName()" title="Edit Name / பெயர் மாற்று" style="background:none; border:none; cursor:pointer; font-size:12px;">✏️</button>
+            </div>
+            <span class="user-role" id="headerRole">Certified Producer</span>
+          </div>
+        </div>
+
+        <div class="auth-buttons-group">
+          <!-- Premium Login Button -->
+          <a href="index.html" class="auth-btn auth-btn-login" id="btnLogin" title="Login / லாக் இன்">
+            <div class="auth-btn-icon-badge login-badge">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                <polyline points="10 17 15 12 10 7"></polyline>
+                <line x1="15" y1="12" x2="3" y2="12"></line>
+              </svg>
+            </div>
+            <span class="auth-btn-text">Login</span>
+          </a>
+
+          <!-- Premium Logout Button -->
+          <button type="button" class="auth-btn auth-btn-logout" id="btnLogout" title="Logout / வெளியேறு" onclick="if(window.Auth && Auth.logout){Auth.logout();window.location.href='index.html';}else{localStorage.clear();window.location.href='index.html';}">
+            <div class="auth-btn-icon-badge logout-badge">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+            </div>
+            <span class="auth-btn-text">Logout</span>
+          </button>
+        </div>
+      </div>
+
+      <button type="button" class="mobile-menu-btn" aria-label="Toggle Navigation">☰</button>
+    </div>
+  </header>
+
+  <!-- ========================================================================== -->
+  <!-- SECTION 4.1: DYNAMIC LIVE TICKER BAR                                       -->
+  <!-- ========================================================================== -->
+  <div class="live-ticker-strip">
+    <div class="ticker-status-badge">
+      <span class="pulse-dot"></span>
+      <span>Live Updates</span>
+    </div>
+    <div class="ticker-scroll-container">
+      <div class="ticker-item">
+        <span class="crop-label">Tomato (நாட்டு) • Coimbatore APMC:</span>
+        <span class="price-val">₹2,240/qtl</span>
+        <span class="change-up">↑ +8.2%</span>
+      </div>
+      <div class="ticker-item">
+        <span class="crop-label">Samba Rice (சம்பா) • Chennai APMC:</span>
+        <span class="price-val">₹3,840/qtl</span>
+        <span class="change-down">↓ -2.1%</span>
+      </div>
+      <div class="ticker-item">
+        <span class="crop-label">Shallots (சின்ன வெங்காயம்) • Salem APMC:</span>
+        <span class="price-val">₹1,320/qtl</span>
+        <span class="change-up">↑ +5.8%</span>
+      </div>
+      <div class="ticker-item">
+        <span class="crop-label">Sugarcane (கரும்பு) • Madurai APMC:</span>
+        <span class="price-val">₹3,100/ton</span>
+        <span class="change-up">↑ +4.2%</span>
+      </div>
+      <!-- Repeat items for continuous infinite scroll -->
+      <div class="ticker-item">
+        <span class="crop-label">Tomato (நாட்டு) • Coimbatore APMC:</span>
+        <span class="price-val">₹2,240/qtl</span>
+        <span class="change-up">↑ +8.2%</span>
+      </div>
+      <div class="ticker-item">
+        <span class="crop-label">Samba Rice (சம்பா) • Chennai APMC:</span>
+        <span class="price-val">₹3,840/qtl</span>
+        <span class="change-down">↓ -2.1%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================== -->
+  <!-- MAIN APP CONTAINER — TWO-COLUMN LAYOUT                                     -->
+  <!-- ========================================================================== -->
+  <div class="companion-app-wrapper">
+    <div class="two-column-dashboard">
+      
+      <!-- ====================================================================== -->
+      <!-- LEFT COLUMN: FARMER COMMAND CENTER                                     -->
+      <!-- ====================================================================== -->
+      <div class="column-left-command">
+        
+        <!-- SECTION 2.1: TOP GREETING & WEATHER STRIP -->
+        <section class="greeting-weather-card">
+          <div class="greeting-info-zone">
+            <h2 class="greeting-main-heading" id="mainGreetingHeading">Good Morning 👨‍🌾</h2>
+            <div class="greeting-tamil-subheading" id="mainGreetingSubheading">வணக்கம் • உழவர் மையம்</div>
+            <div class="greeting-meta-strip">
+              <span id="mainGreetingLocation">📍 மதுரை, வாடிப்பட்டி</span>
+              <span>•</span>
+              <span id="mainGreetingDate">📅 Saturday, Sep 12, 2026</span>
+            </div>
+          </div>
+
+          <div class="weather-widget-zone">
+            <div class="weather-temp-row">
+              <div class="temp-large">28<span>°C</span></div>
+              <span class="weather-condition-tag">⛅ Clear & Dewy</span>
+            </div>
+            <div class="weather-grid-details">
+              <span>💧 Humidity: 65%</span>
+              <span>💨 Wind: 12 km/h</span>
+              <span>🍃 AQI: 42 (Good)</span>
+              <span>🌱 Soil: 24°C</span>
+            </div>
+            <div class="weather-advisory-pill" data-lang="companion.advisory_harvest">
+              💡 தக்காளி அறுவடை செய்ய உகந்த நேரம்
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2.2: MIDDLEMAN EXPLOITATION ALERT BANNER & MATRIX -->
+        <section class="middleman-alert-banner">
+          <div class="alert-top-content">
+            <div class="alert-badge">⚠️ MIDDLEMAN ALERT</div>
+            <h3 class="alert-title-main" data-lang="companion.middleman_alert_title">
+              Are You Getting the Right Price? / உங்கள் பயிருக்கு நியாயமான விலை கிடைக்கிறதா?
+            </h3>
+            <p class="alert-desc-text">
+              Traditional intermediaries deduct 8-12% commission plus uncalibrated weight margins. Compare your net realization with official AgriConnect APMC Mandi pricing below:
+            </p>
+            <a href="trust.html" class="btn-alert-cta">
+              <span data-lang="companion.understand_benefits">Understand APMC Mandi Benefits</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <div class="exploitation-matrix-grid">
+            <div class="matrix-col-card">
+              <span class="matrix-card-header">❌ Middleman Route</span>
+              <span class="matrix-big-num" style="color: #fca5a5;">68% Net</span>
+              <span class="matrix-sub-detail">High commission cuts & delayed 30-day payout</span>
+            </div>
+            <div class="matrix-col-card">
+              <span class="matrix-card-header">🤝 Cooperative Option</span>
+              <span class="matrix-big-num" style="color: #fef08a;">82% Net</span>
+              <span class="matrix-sub-detail">Moderate pooling & 7-day credit release</span>
+            </div>
+            <div class="matrix-col-card highlight">
+              <span class="matrix-card-header">✅ APMC Mandi Rates</span>
+              <span class="matrix-big-num" style="color: #4ade80;">95% Net</span>
+              <span class="matrix-sub-detail">Zero commission & direct e-NAM settlement</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2.3: TOP KPI PERFORMANCE CARDS -->
+        <section class="kpi-cards-grid">
+          <div class="kpi-card">
+            <div class="kpi-card-header">
+              <span class="kpi-title">Soil Health</span>
+              <span class="kpi-trend-badge up">↑ +0.2</span>
+            </div>
+            <div class="kpi-metric-val">8.4<span style="font-size:14px; font-weight:500;">/10</span></div>
+            <div class="kpi-sub-desc">pH 6.8 • NPK Optimal</div>
+            <a href="#" class="kpi-action-link">View Report →</a>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-card-header">
+              <span class="kpi-title">Crop Yield</span>
+              <span class="kpi-trend-badge up">↑ +18%</span>
+            </div>
+            <div class="kpi-metric-val">2.4 <span style="font-size:13px;">t/ha</span></div>
+            <div class="kpi-sub-desc">Plot A • Tomato Est.</div>
+            <a href="#" class="kpi-action-link">Yield Forecast →</a>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-card-header">
+              <span class="kpi-title">Water Efficiency</span>
+              <span class="kpi-trend-badge up">↑ +5%</span>
+            </div>
+            <div class="kpi-metric-val">92%</div>
+            <div class="kpi-sub-desc">Drip Rate Optimal</div>
+            <a href="#" class="kpi-action-link">Drip Timers →</a>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-card-header">
+              <span class="kpi-title">Pest Risk</span>
+              <span class="kpi-trend-badge up">Low</span>
+            </div>
+            <div class="kpi-metric-val">2.1<span style="font-size:14px; font-weight:500;">/10</span></div>
+            <div class="kpi-sub-desc">Scouted 2h ago</div>
+            <a href="advisory.html" class="kpi-action-link">Run AI Scan →</a>
+          </div>
+        </section>
+
+        <!-- SECTION 2.4: LARGE TACTILE FARMER COMMAND BUTTONS -->
+        <section class="quick-actions-section">
+          <div class="section-label-header">
+            <span>⚡</span>
+            <span>Quick Actions / விரைவு செயல்பாடுகள்</span>
+          </div>
+          <div class="quick-buttons-grid">
+            <button type="button" class="tactile-action-btn" onclick="window.location.href='prices.html'">
+              <div class="btn-icon-circle">🌾</div>
+              <span class="btn-label-primary">APMC Market Rates</span>
+              <span class="btn-label-sub">Live Mandi prices</span>
+            </button>
+
+            <button type="button" class="tactile-action-btn" onclick="window.location.href='advisory.html'">
+              <div class="btn-icon-circle">🌱</div>
+              <span class="btn-label-primary">Crop Advisory</span>
+              <span class="btn-label-sub">Health & agronomy guide</span>
+            </button>
+
+            <button type="button" class="tactile-action-btn" onclick="window.location.href='advisory.html'">
+              <div class="btn-icon-circle">🌩️</div>
+              <span class="btn-label-primary">Weather Alert</span>
+              <span class="btn-label-sub">7-day forecast</span>
+            </button>
+
+            <button type="button" class="tactile-action-btn" id="quickPriceReports" onclick="window.location.href='reports.html'">
+              <div class="btn-icon-circle">📈</div>
+              <span class="btn-label-primary">Price Analytics</span>
+              <span class="btn-label-sub">Market trends & reports</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- SECTION 2.5: ACTIVE CROPS CAROUSEL -->
+        <section class="crops-field-section" id="crops-section">
+          <div class="section-header-flex">
+            <div>
+              <h3 class="section-label-header" style="font-size:18px;">🌱 Active Crops in Field</h3>
+              <span style="font-size:12px; color:var(--text-muted);">Track health, growth stage & harvest readiness</span>
+            </div>
+            <a href="#" class="view-all-link">See all 12 fields →</a>
+          </div>
+
+          <div class="carousel-scroll-wrapper">
+            <!-- Crop Card 1 -->
+            <div class="crop-field-card">
+              <div class="crop-card-image-area" style="background-image: url('https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&w=600&q=80');">
+                <div class="crop-card-overlay">
+                  <span class="crop-stage-badge">🌱 Vegetative Stage</span>
+                  <div class="health-score-ring">92%</div>
+                </div>
+              </div>
+              <div class="crop-card-body">
+                <div class="crop-card-title-row">
+                  <span class="crop-card-name">Tomato (நாட்டு)</span>
+                  <span class="days-harvest-tag">⏳ 18 Days</span>
+                </div>
+                <div class="crop-details-box">
+                  <span>💧 Moisture: 65%</span>
+                  <span>🌡️ Soil Temp: 28°C</span>
+                </div>
+                <button type="button" class="btn-card-detail" onclick="window.location.href='advisory.html'">View Field Details</button>
+              </div>
+            </div>
+
+            <!-- Crop Card 2 -->
+            <div class="crop-field-card">
+              <div class="crop-card-image-area" style="background-image: url('https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80');">
+                <div class="crop-card-overlay">
+                  <span class="crop-stage-badge" style="background:#0284c7;">🌾 Flowering Stage</span>
+                  <div class="health-score-ring">95%</div>
+                </div>
+              </div>
+              <div class="crop-card-body">
+                <div class="crop-card-title-row">
+                  <span class="crop-card-name">Samba Rice (சம்பா)</span>
+                  <span class="days-harvest-tag">⏳ 35 Days</span>
+                </div>
+                <div class="crop-details-box">
+                  <span>💧 Moisture: 80%</span>
+                  <span>🌡️ Soil Temp: 26°C</span>
+                </div>
+                <button type="button" class="btn-card-detail" onclick="window.location.href='advisory.html'">View Field Details</button>
+              </div>
+            </div>
+
+            <!-- Crop Card 3 -->
+            <div class="crop-field-card">
+              <div class="crop-card-image-area" style="background-image: url('https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=600&q=80');">
+                <div class="crop-card-overlay">
+                  <span class="crop-stage-badge" style="background:#d97706;">🧅 Maturation Stage</span>
+                  <div class="health-score-ring">88%</div>
+                </div>
+              </div>
+              <div class="crop-card-body">
+                <div class="crop-card-title-row">
+                  <span class="crop-card-name">Shallots (வெங்காயம்)</span>
+                  <span class="days-harvest-tag">⏳ 12 Days</span>
+                </div>
+                <div class="crop-details-box">
+                  <span>💧 Moisture: 55%</span>
+                  <span>🌡️ Soil Temp: 29°C</span>
+                </div>
+                <button type="button" class="btn-card-detail" onclick="window.location.href='advisory.html'">View Field Details</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2.6: FARM LAND GPS MAP & LOGISTICS CONNECT -->
+        <section class="gps-logistics-card">
+          <div class="gps-map-container">
+            <iframe id="landMapFrame" src="https://www.openstreetmap.org/export/embed.html?bbox=77.4185%2C11.4338%2C77.4585%2C11.4738&layer=mapnik&marker=11.4538%2C77.4385" title="Exact Farm Land GPS Location"></iframe>
+            <div class="map-hud-overlay">
+              <span class="pulse-dot"></span>
+              <span id="mapPlotTitle">📍 Registered Land Plot #452/1 • Pudhukaraiyur</span>
+            </div>
+            <div class="map-route-bottom-hud" style="background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(8px);">
+              <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+                <div>
+                  <strong style="color:#4ade80; font-size:13px;">📍 Exact Farm Land Location</strong>
+                  <div style="font-size:11px; color:#cbd5e1; margin-top:2px;" id="mapCoordinatesText">Coordinates: 11.4538° N, 77.4385° E • Gobichettipalayam</div>
+                </div>
+                <button type="button" class="btn-card-detail" style="width:auto; padding:5px 12px; margin:0; font-size:11px; background:rgba(16,185,129,0.2); color:#4ade80; border:1px solid rgba(16,185,129,0.4);" onclick="if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(pos){alert('GPS Location Verified: ' + pos.coords.latitude.toFixed(4) + '° N, ' + pos.coords.longitude.toFixed(4) + '° E');});}else{alert('Land location verified.');}">Verify GPS 🎯</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="dossier-rail-padding">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="dossier-header-title">CERTIFIED PRODUCER DOSSIER</span>
+              <button type="button" onclick="promptEditFarmerName()" style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); color:#047857; font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; cursor:pointer;">✏️ Edit Name</button>
+            </div>
+            <div class="dossier-farmer-row" style="margin-top:6px;">
+              <div class="avatar-circle" id="dossierAvatar" style="width:44px; height:44px; font-size:16px;">T</div>
+              <div>
+                <strong id="dossierName" style="font-size:15px; color:var(--text-primary);">Tamilarasu</strong>
+                <div id="dossierLic" style="font-size:12px; color:var(--text-muted);">APMC Lic #TN-FARM-2026</div>
+              </div>
+            </div>
+            <div class="dossier-details-grid">
+              <span id="dossierReg">Farm Location: மதுரை, வாடிப்பட்டி</span>
+              <span id="dossierCert">Organic Cert: TNOCD-452</span>
+              <span id="dossierLand">Land Area: 4.2 Hectares</span>
+              <span id="dossierVerify">Verification: Verified Producer</span>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; font-size:12px; color:var(--agri-green-800); display:flex; align-items:center; gap:6px;">
+            <span>🎖️</span>
+            <div>
+              <strong style="font-size:13px; color:var(--agri-green-900);">APMC Certified Producer</strong>
+              <div style="font-size:11px; color:var(--text-secondary);">98 successful deals • ₹2.4L volume • 4.9★ rating</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2.7: COMMUNITY PRICE NETWORK & TRADITIONAL WISDOM GRID -->
+        <section class="community-wisdom-grid" id="community-section">
+          <div class="community-price-card">
+            <div class="section-header-flex">
+              <div>
+                <h4 style="font-size:16px; font-weight:700;">Farmers Helping Farmers</h4>
+                <span style="font-size:12px; color:var(--text-muted);">உழவர் தகவல் அரங்கம் • Real-time field rates</span>
+              </div>
+              <button type="button" id="btnSubmitPriceReport" class="btn-card-detail" style="width:auto; padding:6px 12px;">+ Submit Price</button>
+            </div>
+            <div class="community-price-list">
+              <div class="price-report-item">
+                <div>
+                  <strong>Tomato (நாட்டு) • Palladam</strong><br>
+                  <small style="color:var(--text-muted);">Reported by Sundaram • 10m ago</small>
+                </div>
+                <div style="text-align:right;">
+                  <strong style="color:var(--agri-green-700); font-size:16px;">₹24/kg</strong>
+                  <div style="font-size:11px; color:var(--agri-green-600);">↑ Market Signal</div>
+                </div>
+              </div>
+
+              <div class="price-report-item">
+                <div>
+                  <strong>Samba Rice (சம்பா) • Kangeyam</strong><br>
+                  <small style="color:var(--text-muted);">Reported by Murugesan • 45m ago</small>
+                </div>
+                <div style="text-align:right;">
+                  <strong style="color:var(--agri-green-700); font-size:16px;">₹38/kg</strong>
+                  <div style="font-size:11px; color:var(--text-muted);">Stable</div>
+                </div>
+              </div>
+
+              <div class="price-report-item">
+                <div>
+                  <strong>Shallots (சின்ன வெங்காயம்) • Dharapuram</strong><br>
+                  <small style="color:var(--text-muted);">Reported by Velusamy • 2h ago</small>
+                </div>
+                <div style="text-align:right;">
+                  <strong style="color:var(--agri-green-700); font-size:16px;">₹42/kg</strong>
+                  <div style="font-size:11px; color:var(--crimson-600);">↓ Inflow Heavy</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="traditional-wisdom-card">
+            <span style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">TODAY'S ADVISORY</span>
+            <h4 class="wisdom-title-main" data-lang="companion.traditional_wisdom_title">மார்கழி பனி விளைச்சலுக்கு நன்று</h4>
+            <p class="wisdom-body-text" data-lang="companion.traditional_wisdom_body">
+              Morning dew during Margazhi month aids tomato pollination and flower retention. Ensure drip irrigation runs strictly between 6:00 AM and 8:00 AM to preserve root temperature.
+            </p>
+            <div class="wisdom-action-box">
+              <strong style="font-size:11px; text-transform:uppercase;">FIELD RECOMMENDATION:</strong>
+              <div data-lang="companion.field_recommendation" style="margin-top:2px;">
+                Apply organic Panchagavya spray (3%) before 9 AM on Plot A tomatoes to boost calyx firmness against afternoon drying winds.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2.8: PAYOUT PROTECTION & DIRECT BANK ESCROW -->
+        <section class="escrow-protection-strip">
+          <div class="escrow-info-left">
+            <div class="escrow-shield-icon">🛡️</div>
+            <div class="escrow-text-block">
+              <h4 class="escrow-title" data-lang="companion.escrow_guarantee_title">Official APMC Settlement & e-NAM Payment Protection</h4>
+              <p class="escrow-desc">
+                All transactions are secured with e-NAM verified price discovery. Payment is settled promptly upon APMC weighbridge verification.
+              </p>
+            </div>
+          </div>
+          <button type="button" class="btn-verify-bank" onclick="window.location.href='trust.html'">Verify Bank Account</button>
+        </section>
+
+      </div> <!-- /END LEFT COLUMN -->
+
+
+      <!-- ====================================================================== -->
+      <!-- RIGHT COLUMN: DIRECT TRADE MARKETPLACE PAGE                           -->
+      <!-- ====================================================================== -->
+      <div class="column-right-market">
+
+        <!-- SECTION 4.2: FESTIVAL ALERT BANNER (PONGAL DEMAND SURGE) -->
+        <section class="festival-alert-banner">
+          <span class="festival-badge-tag">🎉 FESTIVE DEMAND SURGE</span>
+          <h3 class="festival-title" data-lang="companion.pongal_heading">🌾 பொங்கல் சிறப்பு சந்தை | APMC Festive Mandi Demand Surge</h3>
+          <p class="festival-desc" data-lang="companion.pongal_sub">
+            APMC mandi demand surge active for festive crops: Sugarcane (+40% demand), Turmeric rhizomes (+35%), Fresh Coconuts (+25%). Instant APMC mandi routing available.
+          </p>
+          <button type="button" class="btn-festival-cta" onclick="window.location.href='prices.html'">View Mandi Rates →</button>
+        </section>
+
+        <!-- SECTION 4.3: APMC SPOT RATES TABLE -->
+        <section class="apmc-table-card">
+          <div class="apmc-card-header">
+            <div>
+              <strong style="font-size:16px; color:var(--text-primary);">APMC Certified Spot Rates</strong>
+              <div style="font-size:12px; color:var(--text-muted);">Updated 15 mins ago from e-NAM</div>
+            </div>
+            <button type="button" class="btn-card-detail" style="width:auto; padding:4px 10px;" onclick="location.reload()">Refresh</button>
+          </div>
+          <div class="table-responsive-wrap">
+            <table class="apmc-spot-table">
+              <thead>
+                <tr>
+                  <th data-sort="commodity">Commodity / Market</th>
+                  <th data-sort="high">High</th>
+                  <th data-sort="low">Low</th>
+                  <th data-sort="avg">Average</th>
+                  <th data-sort="change">Change</th>
+                  <th>Trend</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td data-col="commodity"><strong>Tomato (நாட்டு)</strong><br><small>Coimbatore APMC</small></td>
+                  <td data-col="high">₹2,840</td>
+                  <td data-col="low">₹1,980</td>
+                  <td data-col="avg"><strong>₹2,240</strong></td>
+                  <td data-col="change" style="color:var(--agri-green-600); font-weight:700;">↑ +8.2%</td>
+                  <td>
+                    <svg class="sparkline-svg" viewBox="0 0 80 24">
+                      <polyline fill="none" stroke="#10b981" stroke-width="2" points="0,20 15,18 30,12 45,15 60,8 80,4" />
+                    </svg>
+                  </td>
+                </tr>
+                <tr>
+                  <td data-col="commodity"><strong>Samba Rice (சம்பா)</strong><br><small>Chennai APMC</small></td>
+                  <td data-col="high">₹4,120</td>
+                  <td data-col="low">₹3,580</td>
+                  <td data-col="avg"><strong>₹3,840</strong></td>
+                  <td data-col="change" style="color:var(--crimson-600); font-weight:700;">↓ -2.1%</td>
+                  <td>
+                    <svg class="sparkline-svg" viewBox="0 0 80 24">
+                      <polyline fill="none" stroke="#ef4444" stroke-width="2" points="0,5 20,8 40,14 60,12 80,20" />
+                    </svg>
+                  </td>
+                </tr>
+                <tr>
+                  <td data-col="commodity"><strong>Shallots (வெங்காயம்)</strong><br><small>Salem APMC</small></td>
+                  <td data-col="high">₹1,680</td>
+                  <td data-col="low">₹980</td>
+                  <td data-col="avg"><strong>₹1,320</strong></td>
+                  <td data-col="change" style="color:var(--agri-green-600); font-weight:700;">↑ +5.8%</td>
+                  <td>
+                    <svg class="sparkline-svg" viewBox="0 0 80 24">
+                      <polyline fill="none" stroke="#10b981" stroke-width="2" points="0,18 20,15 40,16 60,10 80,6" />
+                    </svg>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- SECTION 4.4: AI PRICE PREDICTION & RECOMMENDATION CARD -->
+        <section class="ai-forecast-card">
+          <div class="section-header-flex">
+            <div>
+              <strong style="font-size:15px; color:var(--text-primary);">🤖 AI Price Forecast & Signal</strong>
+              <div style="font-size:12px; color:var(--text-muted);">Tomorrow's Prediction: Tomato (நாட்டு)</div>
+            </div>
+            <span class="crop-stage-badge" style="background:#0284c7;">High Confidence (94%)</span>
+          </div>
+
+          <div class="forecast-data-grid">
+            <div>
+              <span style="font-size:12px; color:var(--text-muted);">Predicted Peak Rate</span>
+              <div style="font-size:24px; font-weight:800; color:var(--agri-green-900);">₹2,480 / qtl</div>
+              <span style="font-size:11px; color:var(--agri-green-600); font-weight:700;">+2.1% vs today</span>
+            </div>
+            <svg class="sparkline-svg" style="width:100px; height:40px;" viewBox="0 0 100 40">
+              <path d="M0,35 Q25,30 50,15 T100,5" fill="none" stroke="#0284c7" stroke-width="3" />
+            </svg>
+          </div>
+
+          <div class="forecast-recommendation-box">
+            <strong>💡 Smart Selling Recommendation:</strong>
+            <p style="margin-top:4px; font-size:12px; line-height:1.4;">
+              Hold spot lot for 48 hours. Regional inflow from Rayalaseema belt is down 18%. Weekend Pongal wholesale orders will drive rates to peak ₹33-35/kg by Friday afternoon.
+            </p>
+          </div>
+        </section>
+
+        <!-- SECTION 4.5: MIDDLEMAN DIRECT COMPARISON BANNER -->
+        <section class="middleman-alert-banner" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-color:#334155;">
+          <div class="exploitation-matrix-grid">
+            <div class="matrix-col-card" style="text-align:left;">
+              <span class="matrix-card-header" style="color:#f87171;">❌ Traditional Route</span>
+              <ul style="font-size:11px; color:#cbd5e1; margin-left:14px; margin-top:6px; line-height:1.4;">
+                <li>8% - 12% Middleman cut</li>
+                <li>Analog weighbridge loss</li>
+                <li>15 to 45 day payment wait</li>
+              </ul>
+            </div>
+            <div class="matrix-col-card highlight" style="text-align:left; background:rgba(16,185,129,0.15);">
+              <span class="matrix-card-header" style="color:#4ade80;">✅ APMC Mandi Rates</span>
+              <ul style="font-size:11px; color:#e2e8f0; margin-left:14px; margin-top:6px; line-height:1.4;">
+                <li>Transparent APMC Pricing</li>
+                <li>Digital weight verification</li>
+                <li>Direct e-NAM bank settlement</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4.6: SMART FILTER & CATEGORY PILLS -->
+        <section class="filters-section">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <h3 style="font-size:18px; font-weight:700;">Live APMC Mandi Crop Arrivals</h3>
+            <input type="text" id="marketplaceSearchInput" placeholder="Search crop, farmer..." style="padding:6px 12px; border-radius:var(--radius-full); border:1px solid var(--border-light); font-size:12px; width:180px;">
+          </div>
+
+          <!-- Category Pills -->
+          <div class="category-pills-row">
+            <button type="button" class="cat-pill active" data-category="all">All Crops</button>
+            <button type="button" class="cat-pill" data-category="vegetables">Vegetables</button>
+            <button type="button" class="cat-pill" data-category="spices">Spices & Herbs</button>
+            <button type="button" class="cat-pill" data-category="grains">Grains & Pulses</button>
+            <button type="button" class="cat-pill" data-category="fruits">Fruits & Tree Crops</button>
+            <button type="button" class="cat-pill" data-category="floriculture">Floriculture</button>
+          </div>
+
+          <!-- Sub-filters -->
+          <div class="sub-filter-controls">
+            <div class="grade-btn-group">
+              <span style="font-size:12px; margin-right:4px; font-weight:600; color:var(--text-muted);">Grade:</span>
+              <button type="button" class="grade-pill-btn active" data-grade="all">All</button>
+              <button type="button" class="grade-pill-btn" data-grade="A">Grade A</button>
+              <button type="button" class="grade-pill-btn" data-grade="B">Grade B</button>
+              <button type="button" class="grade-pill-btn" data-grade="C">Grade C</button>
+            </div>
+
+            <select style="padding:4px 8px; font-size:12px; border-radius:var(--radius-sm); border:1px solid var(--border-light);">
+              <option>Within 50 km</option>
+              <option>Within 100 km</option>
+              <option>All Tamil Nadu</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- SECTION 4.7: MARKETPLACE LISTINGS 3-CARD GRID -->
+        <section class="marketplace-grid">
+          <!-- Card 1 -->
+          <div class="market-listing-card" data-crop-category="vegetables" data-crop-grade="A">
+            <div class="listing-image-wrap" style="background-image: url('https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&w=600&q=80');">
+              <div class="crop-card-overlay">
+                <span class="crop-stage-badge">Grade A: Premium</span>
+                <span class="crop-stage-badge" style="background:#0284c7;">Certified Organic</span>
+              </div>
+            </div>
+            <div class="listing-content-area">
+              <div class="section-header-flex">
+                <div>
+                  <h4 style="font-size:16px; font-weight:700;">Fresh Farm Tomato</h4>
+                  <div class="seller-profile-row" style="margin-top:4px;">
+                    <div class="avatar-circle seller-avatar" style="width:24px; height:24px; font-size:10px;">FP</div>
+                    <span class="seller-name" style="font-size:12px; color:var(--text-secondary);">Verified Producer</span>
+                  </div>
+                </div>
+                <div style="text-align:right;">
+                  <strong style="font-size:22px; color:var(--agri-green-800);">₹2,240</strong>
+                  <span style="font-size:11px; display:block; color:var(--agri-green-600);">/qtl ↑ 2.1%</span>
+                </div>
+              </div>
+
+              <div class="crop-details-box">
+                <span>Stock: 8.5 Tons</span>
+                <span>Min Order: 500 kg</span>
+              </div>
+
+              <div style="font-size:11px; color:var(--agri-green-700); font-weight:600;">
+                🚚 Free logistics to Coimbatore within 24hrs
+              </div>
+
+              <div class="listing-actions-row">
+                <button type="button" class="btn-listing-action secondary" onclick="window.location.href='prices.html'">View Mandi Rates</button>
+                <button type="button" class="btn-listing-action primary" onclick="window.location.href='advisory.html'">View Crop Advisory</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="market-listing-card" data-crop-category="grains" data-crop-grade="A">
+            <div class="listing-image-wrap" style="background-image: url('https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80');">
+              <div class="crop-card-overlay">
+                <span class="crop-stage-badge">Grade A: Premium</span>
+                <span class="crop-stage-badge" style="background:#047857;">APMC Verified</span>
+              </div>
+            </div>
+            <div class="listing-content-area">
+              <div class="section-header-flex">
+                <div>
+                  <h4 style="font-size:16px; font-weight:700;">Organic Samba Rice</h4>
+                  <div class="seller-profile-row" style="margin-top:4px;">
+                    <div class="avatar-circle" style="width:24px; height:24px; font-size:10px;">KS</div>
+                    <span style="font-size:12px; color:var(--text-secondary);">Kaliappan S. • Thanjavur</span>
+                  </div>
+                </div>
+                <div style="text-align:right;">
+                  <strong style="font-size:22px; color:var(--agri-green-800);">₹3,840</strong>
+                  <span style="font-size:11px; display:block; color:var(--agri-green-600);">/qtl ↑ 1.5%</span>
+                </div>
+              </div>
+
+              <div class="crop-details-box">
+                <span>Stock: 14.0 Tons</span>
+                <span>Min Order: 1000 kg</span>
+              </div>
+
+              <div style="font-size:11px; color:var(--agri-green-700); font-weight:600;">
+                🌾 Certified Seed Lineage • Moisture < 11%
+              </div>
+
+              <div class="listing-actions-row">
+                <button type="button" class="btn-listing-action secondary" onclick="window.location.href='prices.html'">View Mandi Rates</button>
+                <button type="button" class="btn-listing-action primary" onclick="window.location.href='advisory.html'">View Crop Advisory</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="market-listing-card" data-crop-category="vegetables" data-crop-grade="B">
+            <div class="listing-image-wrap" style="background-image: url('https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=600&q=80');">
+              <div class="crop-card-overlay">
+                <span class="crop-stage-badge" style="background:#d97706;">Grade B: Fresh</span>
+              </div>
+            </div>
+            <div class="listing-content-area">
+              <div class="section-header-flex">
+                <div>
+                  <h4 style="font-size:16px; font-weight:700;">Small Shallots (சின்ன வெங்காயம்)</h4>
+                  <div class="seller-profile-row" style="margin-top:4px;">
+                    <div class="avatar-circle" style="width:24px; height:24px; font-size:10px;">MV</div>
+                    <span style="font-size:12px; color:var(--text-secondary);">Murugan V. • Perambalur</span>
+                  </div>
+                </div>
+                <div style="text-align:right;">
+                  <strong style="font-size:22px; color:var(--agri-green-800);">₹1,320</strong>
+                  <span style="font-size:11px; display:block; color:var(--agri-green-600);">/qtl ↑ 5.8%</span>
+                </div>
+              </div>
+
+              <div class="crop-details-box">
+                <span>Stock: 6.0 Tons</span>
+                <span>Min Order: 300 kg</span>
+              </div>
+
+              <div style="font-size:11px; color:var(--agri-green-700); font-weight:600;">
+                🧅 Sun-dried & sorted • Immediate farmgate loading
+              </div>
+
+              <div class="listing-actions-row">
+                <button type="button" class="btn-listing-action secondary" onclick="window.location.href='prices.html'">View Mandi Rates</button>
+                <button type="button" class="btn-listing-action primary" onclick="window.location.href='advisory.html'">View Crop Advisory</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4.8: CROP QUALITY GRADING EXPLAINER -->
+        <section class="grading-explainer-card">
+          <div class="section-header-flex">
+            <div>
+              <strong style="font-size:15px;">Quality Standards & Certification</strong>
+              <h4 style="font-size:18px; font-weight:700; color:var(--agri-green-900);">How Produce is Graded & Certified</h4>
+            </div>
+            <a href="#" class="view-all-link">Download PDF →</a>
+          </div>
+
+          <div class="grading-columns-grid">
+            <div class="grade-box-col">
+              <span class="crop-stage-badge">Grade A: Premium</span>
+              <strong>Export & Retail Grade</strong>
+              <p>Dawn harvest, strictly uniform size, zero pest cuts, certified MRL residue clearance.</p>
+            </div>
+            <div class="grade-box-col">
+              <span class="crop-stage-badge" style="background:#d97706;">Grade B: Fresh</span>
+              <strong>Wholesale & Mandi Grade</strong>
+              <p>Fresh harvest with minor cosmetic size variation. Ideal for daily Kirana retail & mandis.</p>
+            </div>
+            <div class="grade-box-col">
+              <span class="crop-stage-badge" style="background:#64748b;">Grade C: Bulk</span>
+              <strong>Processing Grade</strong>
+              <p>Bulk processing grade for sauce units, puree mills, and institutional messes.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4.9: INTERACTIVE OTP ESCROW SIMULATION DEMO -->
+        <section class="otp-simulation-card">
+          <div class="section-header-flex">
+            <div>
+              <span class="crop-stage-badge" style="background:#38bdf8; color:#0f172a;" data-lang="companion.otp_title">Test Secure OTP Flow</span>
+              <h3 style="font-size:18px; font-weight:800; margin-top:4px;">e-Kisan Escrow Delivery Verification</h3>
+            </div>
+            <span class="pulse-dot"></span>
+          </div>
+
+          <div style="font-size:13px; color:#cbd5e1; line-height:1.4;">
+            APMC Registered Merchant: <strong>Lakshanaa Vegetable Traders</strong><br>
+            Transaction Amount: <strong>₹18,960 (Mandi Escrow Locked)</strong>
+          </div>
+
+          <div style="text-align:center; margin:8px 0;">
+            <label style="font-size:12px; color:#94a3b8; display:block; margin-bottom:8px;">Enter 4-Digit Weighbridge OTP (Demo Code: 8257):</label>
+            <div class="otp-boxes-wrapper">
+              <input type="text" maxlength="1" class="otp-single-input" id="otp1" value="8">
+              <input type="text" maxlength="1" class="otp-single-input" id="otp2" value="2">
+              <input type="text" maxlength="1" class="otp-single-input" id="otp3" value="5">
+              <input type="text" maxlength="1" class="otp-single-input" id="otp4" value="7">
+            </div>
+          </div>
+
+          <button type="button" class="btn-verify-otp" id="verifyOtpBtn" data-lang="companion.otp_verify_btn">Verify & Release Payout to Bank</button>
+
+          <div class="otp-success-alert" id="otpSuccessAlert">
+            <!-- Populated via companion.js -->
+          </div>
+        </section>
+
+      </div> <!-- /END RIGHT COLUMN -->
+
+    </div> <!-- /END TWO-COLUMN DASHBOARD -->
+  </div> <!-- /END APP WRAPPER -->
+
+
+  <!-- ========================================================================== -->
+  <!-- SECTION 3: FOOTER                                                          -->
+  <!-- ========================================================================== -->
+  <footer class="companion-footer">
+    <div class="footer-columns-grid">
+      <!-- Col 1: Company Info -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">🌾 AgriConnect Companion</h4>
+        <p>Dignified fair commerce empowering Tamil Nadu and Indian agriculturists with zero intermediaries and APMC certified spot rates.</p>
+        <div>📞 Toll-Free Support: 1800-425-7890</div>
+        <div style="font-size:11px; opacity:0.8;">(Tamil / English / Hindi - 24/7 Field Support)</div>
+      </div>
+
+      <!-- Col 2: Direct Escrow Guarantee -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">🛡️ Official Mandi Settlement</h4>
+        <p>All transactions are secured via smart mandi escrow. Payout release occurs instantly upon verified electronic weighbridge OTP confirmation.</p>
+        <div style="font-size:11px; color:#4ade80;">RBI Regulated Escrow License #TN-PLM-2024-882</div>
+      </div>
+
+      <!-- Col 3: Ecosystem -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">🌱 Farmer Producer Ecosystem</h4>
+        <p>Integrated with e-NAM spot rates, NABARD-registered FPOs, and state agricultural university crop advisories.</p>
+        <div style="font-size:11px; color:#cbd5e1;">Regulated Mandi License: #TN-PLM-2024-882</div>
+      </div>
+    </div>
+
+    <div class="footer-bottom-row">
+      <div>© 2026 AgriConnect. Empowering Tamil Nadu Farmers. All rights reserved.</div>
+      <div class="footer-links-group">
+        <a href="trust.html">Privacy Policy</a>
+        <a href="trust.html">Terms of Service</a>
+        <a href="advisory.html">Contact Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/lang.js?v=3.0"></script>
+  <script src="js/dashboard.js?v=3.0"></script>
+  <script src="js/companion.js?v=3.0"></script>
+</body>
+</html>

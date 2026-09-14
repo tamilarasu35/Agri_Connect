@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>AgriConnect — Reports & Data Export</title>
+  <meta name="description" content="AgriConnect Reports: view transaction history, savings summary, and export your farming data.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+Tamil:wght@400;500;700&family=Yatra+One&display=swap" rel="stylesheet">
+  
+  <!-- Global & Phase 8 Specific CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/reports.css">
+</head>
+<body class="page-reports">
+
+  <!-- Shared Minimal Nav -->
+  <nav class="top-nav">
+    <div class="nav-left">
+      <button class="icon-btn" id="btnBack" onclick="window.location.href='dashboard.html'">
+        <span class="back-arrow">←</span>
+      </button>
+      <div class="logo">🌾 FarmPrice</div>
+    </div>
+    <div class="nav-center">
+      <span class="lang-badge" id="currentLangBadge">தமிழ்</span>
+    </div>
+    <div class="nav-right" id="navProfile">
+      <div class="avatar" id="navAvatar">மு</div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="rep-header">
+    <h1 data-lang="rep.page_title">அறிக்கைகள் & தரவு</h1>
+    <p data-lang="rep.page_desc">Reports & Data Export</p>
+  </header>
+
+  <main class="rep-container">
+    
+    <!-- 4 Report Type Cards -->
+    <div class="rep-grid">
+      <div class="rep-card" data-report="price">
+        <span class="rep-icon">📊</span>
+        <strong data-lang="rep.daily_price">Daily Price Report</strong>
+      </div>
+      <div class="rep-card active" data-report="transactions">
+        <span class="rep-icon">📋</span>
+        <strong data-lang="rep.my_tx">My Transactions</strong>
+      </div>
+      <div class="rep-card" data-report="savings">
+        <span class="rep-icon">💰</span>
+        <strong data-lang="rep.savings">Savings Report</strong>
+      </div>
+      <div class="rep-card" data-report="export">
+        <span class="rep-icon">📁</span>
+        <strong data-lang="rep.export_all">Export All Data</strong>
+      </div>
+    </div>
+
+    <!-- Active Report Render Container -->
+    <div class="report-viewer" id="reportViewer">
+      <!-- Default active (My Transactions) -->
+      <div id="txReportContainer" class="rep-print-area">
+════════════════════════════════════════
+   MY TRANSACTION HISTORY
+   Farmer: Murugan | Palladam, Coimbatore
+   Period: March 2026
+════════════════════════════════════════
+TXN-ID       Crop        Qty    Price   Total    Status
+──────────────────────────────────────────────────────
+TXN-8841     Tomato      200kg  ₹18/kg  ₹3,600   ✅ Done
+TXN-9102     Onion       50kg   ₹12/kg  ₹600     ⏳ Pending
+TXN-9388     Turmeric    100kg  ₹85/kg  ₹8,500   ● Active
+──────────────────────────────────────────────────────
+TOTAL EARNED:  ₹12,700
+════════════════════════════════════════
+      </div>
+
+      <!-- Action buttons -->
+      <div class="rep-actions mt-20 gap-10">
+        <button class="btn-outline" id="btnPrintRep" data-lang="rep.btn_print">🖨️ Print</button>
+        <button class="btn-outline" id="btnDltxt" data-lang="rep.btn_dl_txt">💾 Download .txt</button>
+        <button class="btn-primary" id="btnDlcsv" data-lang="rep.btn_dl_csv">📊 Download .csv</button>
+      </div>
+    </div>
+
+    <!-- Export View (Hidden initially) -->
+    <div id="exportView" style="display:none;" class="export-view-container">
+      <h3 data-lang="rep.export_title">Download Database (CSV)</h3>
+      <p style="color:var(--text-secondary); margin-bottom: 20px;" data-lang="rep.export_note">
+        இந்த தரவு கிராம பஞ்சாயத்து அல்லது NGO-க்கு கொடுக்கலாம் (This data can be provided to gram panchayat or NGO for record keeping)
+      </p>
+
+      <button class="btn-outline w-100 mb-10" style="text-align:left; justify-content:flex-start;">
+        <span style="font-size:1.5rem; margin-right:15px;">📥</span> Download farmers.csv
+      </button>
+      <button class="btn-outline w-100 mb-10" style="text-align:left; justify-content:flex-start;">
+        <span style="font-size:1.5rem; margin-right:15px;">📥</span> Download orders.csv
+      </button>
+      <button class="btn-outline w-100 mb-10" style="text-align:left; justify-content:flex-start;">
+        <span style="font-size:1.5rem; margin-right:15px;">📥</span> Download prices_cache.csv
+      </button>
+      <button class="btn-outline w-100 mb-10" style="text-align:left; justify-content:flex-start;">
+        <span style="font-size:1.5rem; margin-right:15px;">📥</span> Download price_history.csv
+      </button>
+    </div>
+
+  </main>
+
+  <script src="js/lang.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Route guard — redirect to login if no valid session
+    (function() {
+      var session = null;
+      try { session = JSON.parse(localStorage.getItem('fps_session')); } catch(e) {}
+      if (!session || !session.id) {
+        window.location.replace('index.html');
+      }
+    })();
+  </script>
+  <script src="js/reports.js"></script>
+</body>
+</html>

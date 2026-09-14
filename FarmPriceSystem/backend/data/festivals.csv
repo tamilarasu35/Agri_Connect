@@ -1,0 +1,11 @@
+festival,date,region,impact_crop,impact_percent,type
+Pongal,2026-01-15,Tamil Nadu,Sugarcane,+40,price_rise
+Pongal,2026-01-15,Tamil Nadu,Turmeric,+25,price_rise
+Ugadi,2026-03-22,Andhra Pradesh,Mango,+30,price_rise
+Tamil New Year,2026-04-14,Tamil Nadu,Banana,+35,price_rise
+Tamil New Year,2026-04-14,Tamil Nadu,Mango,+28,price_rise
+Onam,2026-09-05,Kerala,Banana,+40,price_rise
+Diwali,2026-10-20,All India,Groundnut,+20,price_rise
+Navratri,2026-10-02,All India,Coconut,+30,price_rise
+Makar Sankranti,2026-01-14,North India,Sugarcane,+35,price_rise
+Holi,2026-03-06,North India,Wheat,+15,price_rise
