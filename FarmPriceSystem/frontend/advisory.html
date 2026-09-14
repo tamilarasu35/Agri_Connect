@@ -117,7 +117,7 @@
   <!-- 1. TOP GLOBAL NAVIGATION & BRANDING                                        -->
   <!-- ========================================================================== -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <div class="w-full px-4 sm:px-8 xl:px-12 h-16 flex items-center justify-between gap-4">
       
       <!-- Left: Back Button & Logo -->
       <div class="flex items-center gap-3">
@@ -144,7 +144,7 @@
   <!-- ========================================================================== -->
   <!-- 2. MAIN CONTAINER                                                          -->
   <!-- ========================================================================== -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-12 space-y-6">
+  <main class="w-full px-4 sm:px-8 xl:px-12 pt-6 pb-12 space-y-6">
 
     <!-- PAGE HERO & BREADCRUMB -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200/80">
@@ -180,7 +180,7 @@
       <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
         
         <!-- Left: Alert Highlights -->
-        <div class="space-y-3 max-w-2xl">
+        <div class="space-y-3 flex-1 min-w-0">
           <div class="flex items-center gap-2.5">
             <span class="w-10 h-10 rounded-2xl bg-amber-400/20 border border-amber-400/40 text-amber-300 flex items-center justify-center text-xl shadow-sm">
               🎉
@@ -400,112 +400,94 @@
               <div class="flex items-center gap-2">
                 <span class="text-lg">🗓️</span>
                 <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">
-                  பருவகால பயிர் நாட்காட்டி
-                </h2>
-              </div>
-              <p class="text-xs text-slate-500 font-medium">Seasonal Crop Cultivation & Harvesting Window</p>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <button onclick="scrollCalendar(-200)" aria-label="முந்தைய மாதம்" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-700 text-xs font-bold shadow-xs transition active:scale-95">
-                ◀
-              </button>
-              <button onclick="scrollCalendar(200)" aria-label="அடுத்த மாதம்" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-700 text-xs font-bold shadow-xs transition active:scale-95">
-                ▶
-              </button>
-            </div>
-          </div>
-
-          <!-- Horizontal Scrollable Months -->
-          <div id="calendarScrollContainer" class="flex items-stretch gap-3 overflow-x-auto pb-3 pt-1 calendar-scrollbar scroll-smooth">
-            
-            <!-- January -->
-            <div class="min-w-[130px] w-[130px] bg-emerald-50/70 border-2 border-emerald-300/80 rounded-2xl p-3 flex flex-col justify-between shrink-0 shadow-xs hover:shadow-md transition">
+               <!-- January -->
+            <div class="min-w-[170px] flex-1 max-w-[220px] bg-emerald-50/80 border-2 border-emerald-300/90 rounded-2xl p-4 flex flex-col justify-between shrink-0 shadow-xs hover:shadow-md transition">
               <div>
-                <span class="inline-block text-[11px] font-extrabold px-2 py-0.5 rounded-lg bg-emerald-700 text-white shadow-xs">
+                <span class="inline-block text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-emerald-700 text-white shadow-xs">
                   January
                 </span>
-                <p class="text-[10px] font-bold text-slate-500 mt-2.5 mb-1 uppercase tracking-wider">Best crops:</p>
-                <ul class="text-xs font-bold text-slate-800 space-y-1">
-                  <li class="flex items-center gap-1.5"><span>🟠</span> Turmeric</li>
-                  <li class="flex items-center gap-1.5"><span>🌱</span> Sugarcane</li>
+                <p class="text-[10px] font-bold text-slate-500 mt-3 mb-1.5 uppercase tracking-wider">Best crops:</p>
+                <ul class="text-xs font-bold text-slate-800 space-y-1.5">
+                  <li class="flex items-center gap-2"><span class="text-base">🟠</span> Turmeric</li>
+                  <li class="flex items-center gap-2"><span class="text-base">🌱</span> Sugarcane</li>
                 </ul>
               </div>
-              <span class="text-[10px] text-emerald-800 font-extrabold mt-3 pt-1.5 border-t border-emerald-200 block text-center">Season Peak ⭐</span>
+              <span class="text-[11px] text-emerald-800 font-extrabold mt-3.5 pt-2 border-t border-emerald-200 block text-center">Season Peak ⭐</span>
             </div>
 
             <!-- February -->
-            <div class="min-w-[130px] w-[130px] bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
+            <div class="min-w-[170px] flex-1 max-w-[220px] bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
               <div>
-                <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-lg bg-slate-200 text-slate-800">
+                <span class="inline-block text-xs font-bold px-2.5 py-0.5 rounded-lg bg-slate-200 text-slate-800">
                   February
                 </span>
-                <p class="text-[10px] font-bold text-slate-500 mt-2.5 mb-1 uppercase tracking-wider">Best crops:</p>
-                <ul class="text-xs font-bold text-slate-800 space-y-1">
-                  <li class="flex items-center gap-1.5"><span>🌾</span> Wheat</li>
-                  <li class="flex items-center gap-1.5"><span>🥜</span> Groundnut</li>
+                <p class="text-[10px] font-bold text-slate-500 mt-3 mb-1.5 uppercase tracking-wider">Best crops:</p>
+                <ul class="text-xs font-bold text-slate-800 space-y-1.5">
+                  <li class="flex items-center gap-2"><span class="text-base">🌾</span> Wheat</li>
+                  <li class="flex items-center gap-2"><span class="text-base">🥜</span> Groundnut</li>
                 </ul>
               </div>
-              <span class="text-[10px] text-amber-800 font-bold mt-3 pt-1.5 border-t border-slate-200 block text-center">Harvest Time ⏳</span>
+              <span class="text-[11px] text-amber-800 font-bold mt-3.5 pt-2 border-t border-slate-200 block text-center">Harvest Time ⏳</span>
             </div>
 
             <!-- March -->
-            <div class="min-w-[130px] w-[130px] bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
+            <div class="min-w-[170px] flex-1 max-w-[220px] bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
               <div>
-                <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-lg bg-slate-200 text-slate-800">
+                <span class="inline-block text-xs font-bold px-2.5 py-0.5 rounded-lg bg-slate-200 text-slate-800">
                   March
                 </span>
-                <p class="text-[10px] font-bold text-slate-500 mt-2.5 mb-1 uppercase tracking-wider">Best crops:</p>
-                <ul class="text-xs font-bold text-slate-800 space-y-1">
-                  <li class="flex items-center gap-1.5"><span>🥭</span> Mango</li>
-                  <li class="flex items-center gap-1.5"><span>🍅</span> Tomato</li>
+                <p class="text-[10px] font-bold text-slate-500 mt-3 mb-1.5 uppercase tracking-wider">Best crops:</p>
+                <ul class="text-xs font-bold text-slate-800 space-y-1.5">
+                  <li class="flex items-center gap-2"><span class="text-base">🥭</span> Mango</li>
+                  <li class="flex items-center gap-2"><span class="text-base">🍅</span> Tomato</li>
                 </ul>
               </div>
-              <span class="text-[10px] text-emerald-700 font-bold mt-3 pt-1.5 border-t border-slate-200 block text-center">High Demand 🔥</span>
+              <span class="text-[11px] text-emerald-700 font-bold mt-3.5 pt-2 border-t border-slate-200 block text-center">High Demand 🔥</span>
             </div>
 
             <!-- April -->
-            <div class="min-w-[130px] w-[130px] bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
+            <div class="min-w-[170px] flex-1 max-w-[220px] bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
               <div>
-                <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-lg bg-slate-200 text-slate-800">
+                <span class="inline-block text-xs font-bold px-2.5 py-0.5 rounded-lg bg-slate-200 text-slate-800">
                   April
                 </span>
-                <p class="text-[10px] font-bold text-slate-500 mt-2.5 mb-1 uppercase tracking-wider">Best crops:</p>
-                <ul class="text-xs font-bold text-slate-800 space-y-1">
-                  <li class="flex items-center gap-1.5"><span>🍉</span> Watermelon</li>
-                  <li class="flex items-center gap-1.5"><span>🌽</span> Maize</li>
+                <p class="text-[10px] font-bold text-slate-500 mt-3 mb-1.5 uppercase tracking-wider">Best crops:</p>
+                <ul class="text-xs font-bold text-slate-800 space-y-1.5">
+                  <li class="flex items-center gap-2"><span class="text-base">🍉</span> Watermelon</li>
+                  <li class="flex items-center gap-2"><span class="text-base">🌽</span> Maize</li>
                 </ul>
               </div>
-              <span class="text-[10px] text-orange-700 font-bold mt-3 pt-1.5 border-t border-slate-200 block text-center">Summer Crop ☀️</span>
+              <span class="text-[11px] text-orange-700 font-bold mt-3.5 pt-2 border-t border-slate-200 block text-center">Summer Crop ☀️</span>
             </div>
 
             <!-- May -->
-            <div class="min-w-[130px] w-[130px] bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
+            <div class="min-w-[170px] flex-1 max-w-[220px] bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
               <div>
-                <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-lg bg-slate-200 text-slate-800">
+                <span class="inline-block text-xs font-bold px-2.5 py-0.5 rounded-lg bg-slate-200 text-slate-800">
                   May
                 </span>
-                <p class="text-[10px] font-bold text-slate-500 mt-2.5 mb-1 uppercase tracking-wider">Best crops:</p>
-                <ul class="text-xs font-bold text-slate-800 space-y-1">
-                  <li class="flex items-center gap-1.5"><span>🥒</span> Cucumber</li>
-                  <li class="flex items-center gap-1.5"><span>☁️</span> Cotton</li>
+                <p class="text-[10px] font-bold text-slate-500 mt-3 mb-1.5 uppercase tracking-wider">Best crops:</p>
+                <ul class="text-xs font-bold text-slate-800 space-y-1.5">
+                  <li class="flex items-center gap-2"><span class="text-base">🥒</span> Cucumber</li>
+                  <li class="flex items-center gap-2"><span class="text-base">☁️</span> Cotton</li>
                 </ul>
               </div>
-              <span class="text-[10px] text-slate-700 font-bold mt-3 pt-1.5 border-t border-slate-200 block text-center">Early Sowing 🌱</span>
+              <span class="text-[11px] text-slate-700 font-bold mt-3.5 pt-2 border-t border-slate-200 block text-center">Early Sowing 🌱</span>
             </div>
 
             <!-- June -->
-            <div class="min-w-[130px] w-[130px] bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
+            <div class="min-w-[170px] flex-1 max-w-[220px] bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
               <div>
-                <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-lg bg-slate-200 text-slate-800">
+                <span class="inline-block text-xs font-bold px-2.5 py-0.5 rounded-lg bg-slate-200 text-slate-800">
                   June
                 </span>
-                <p class="text-[10px] font-bold text-slate-500 mt-2.5 mb-1 uppercase tracking-wider">Best crops:</p>
-                <ul class="text-xs font-bold text-slate-800 space-y-1">
-                  <li class="flex items-center gap-1.5"><span>🌾</span> Paddy (நெல்)</li>
-                  <li class="flex items-center gap-1.5"><span>🌱</span> Pulses</li>
+                <p class="text-[10px] font-bold text-slate-500 mt-3 mb-1.5 uppercase tracking-wider">Best crops:</p>
+                <ul class="text-xs font-bold text-slate-800 space-y-1.5">
+                  <li class="flex items-center gap-2"><span class="text-base">🌾</span> Paddy (நெல்)</li>
+                  <li class="flex items-center gap-2"><span class="text-base">🌱</span> Pulses</li>
                 </ul>
               </div>
-              <span class="text-[10px] text-blue-700 font-bold mt-3 pt-1.5 border-t border-slate-200 block text-center">Monsoon Crop 🌧️</span>
+              <span class="text-[11px] text-blue-700 font-bold mt-3.5 pt-2 border-t border-slate-200 block text-center">Monsoon Crop 🌧️</span>
             </div>
 
           </div>
