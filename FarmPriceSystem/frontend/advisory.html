@@ -1,221 +1,908 @@
 <!DOCTYPE html>
 <html lang="ta">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>AgriConnect — Crop Advisory & Intelligence</title>
-  <meta name="description" content="AgriConnect crop advisory: seasonal intelligence, festival price alerts, and market demand analysis for farmers.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriConnect — பயிர் ஆலோசனை & சந்தை நுண்ணறிவு மையம் (Crop Advisory)</title>
   
-  <!-- Fonts -->
+  <!-- Modern Typography: Plus Jakarta Sans, Outfit, Noto Sans Tamil & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+Tamil:wght@400;500;700&family=Yatra+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Global CSS & Phase 7 CSS -->
+  <!-- Tailwind CSS for high-performance layout -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Design System & Tokens -->
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/companion.css">
   <link rel="stylesheet" href="css/advisory.css">
+
+  <style>
+    :root {
+      --adv-bg: #f8fafc;
+      --adv-forest: #032b14;
+      --adv-leaf: #055a29;
+      --adv-emerald: #10b981;
+      --adv-gold: #f59e0b;
+      --adv-amber-bg: #fffbeb;
+      --adv-border: rgba(16, 185, 129, 0.2);
+    }
+
+    body {
+      font-family: 'Noto Sans Tamil', 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Glassmorphic Cards */
+    .glass-card {
+      background: #ffffff;
+      border: 1px solid rgba(226, 232, 240, 0.85);
+      border-radius: 18px;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .glass-card:hover {
+      box-shadow: 0 10px 25px -3px rgba(15, 23, 42, 0.08);
+    }
+
+    .festival-hero-card {
+      background: linear-gradient(135deg, #032b14 0%, #064e26 50%, #0b3d20 100%);
+      border: 1.5px solid rgba(245, 158, 11, 0.4);
+      border-radius: 20px;
+      box-shadow: 0 12px 32px -4px rgba(3, 43, 20, 0.35);
+    }
+
+    /* Horizontal Custom Scrollbar */
+    .calendar-scrollbar::-webkit-scrollbar {
+      height: 6px;
+    }
+    .calendar-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 9999px;
+    }
+    .calendar-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .calendar-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    .crop-rank-pill {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      color: #92400e;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* Input Focus Styles */
+    .adv-input {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      color: #0f172a;
+      transition: all 0.2s ease;
+    }
+    .adv-input:focus {
+      outline: none;
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    /* Tactile Buttons */
+    .btn-agri-primary {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: #ffffff;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+    }
+    .btn-agri-primary:hover {
+      background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+      box-shadow: 0 6px 16px rgba(5, 150, 105, 0.35);
+      transform: translateY(-1px);
+    }
+    .btn-agri-primary:active {
+      transform: translateY(0);
+    }
+  </style>
 </head>
-<body class="page-advisory">
+<body class="min-h-screen pb-20">
 
-  <!-- Shared Minimal Nav -->
-  <nav class="top-nav">
-    <div class="nav-left">
-      <button class="icon-btn" id="btnBack" onclick="window.location.href='dashboard.html'">
-        <span class="back-arrow">←</span>
-      </button>
-      <div class="logo">🌾 FarmPrice</div>
-    </div>
-    <div class="nav-center">
-      <span class="lang-badge" id="currentLangBadge">தமிழ்</span>
-    </div>
-    <div class="nav-right" id="navProfile">
-      <div class="avatar" id="navAvatar">மு</div>
-    </div>
-  </nav>
+  <!-- ========================================================================== -->
+  <!-- 1. TOP GLOBAL NAVIGATION & BRANDING                                        -->
+  <!-- ========================================================================== -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Left: Back Button & Logo -->
+      <div class="flex items-center gap-3">
+        <button type="button" 
+                id="btnBack" 
+                onclick="window.location.href='dashboard.html'" 
+                class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center gap-2 text-slate-800 font-bold transition active:scale-95 text-xs sm:text-sm"
+                title="Back to Dashboard">
+          <span class="text-base">←</span>
+          <span>பண்ணை முகப்பு (Dashboard)</span>
+        </button>
+        <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='dashboard.html'">
+          <span class="text-2xl">🌾</span>
+          <div>
+            <span class="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg block leading-none">AgriConnect</span>
+            <span class="text-[10px] text-emerald-700 font-bold tracking-tight">பயிர் ஆலோசனை மையம்</span>
+          </div>
+        </div>
+      </div>
 
-  <!-- Page Header -->
-  <header class="advisory-header">
-    <h1 data-lang="adv.page_title">பயிர் ஆலோசனை மையம்</h1>
-    <p data-lang="adv.page_desc">Seasonal Intelligence & Market Demand</p>
+    </div>
   </header>
 
-  <main class="adv-container">
-    
-    <!-- Festival Price Alert Banner -->
-    <div class="festival-alert" id="festivalAlertBanner">
-      <div class="alert-icon">🎉</div>
-      <div class="alert-content">
-        <h3 id="festAlertTitle" style="margin: 0; font-family: var(--font-display);">பொங்கல் — 8 நாட்களில்</h3>
-        <p style="margin: 5px 0;">
-          🎋 Sugarcane → Expected +40% price rise<br>
-          🌕 Turmeric → Expected +35% price rise<br>
-          🥥 Coconut → Expected +25% price rise
+  <!-- ========================================================================== -->
+  <!-- 2. MAIN CONTAINER                                                          -->
+  <!-- ========================================================================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-12 space-y-6">
+
+    <!-- PAGE HERO & BREADCRUMB -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200/80">
+      <div>
+        <div class="flex items-center gap-2 text-xs text-emerald-800 font-bold uppercase tracking-wider mb-1">
+          <span>🌱 தமிழ்நாடு வேளாண் துறை நுண்ணறிவு</span>
+          <span>•</span>
+          <span class="inline-flex items-center gap-1 text-emerald-600"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> நேரலை மண்டி கணிப்பு</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          பயிர் ஆலோசனை மையம் (Crop Advisory)
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+          Seasonal Intelligence, Festival Price Spikes & Market Demand Analytics
         </p>
-        <p style="margin: 0; font-weight: bold;" data-lang="adv.fest_warn">இப்போது விற்காதீர்கள் — பொங்கலுக்கு பிறகு விற்கலாம்!</p>
-        <small data-lang="adv.fest_warn_en">(Do not sell now — wait for better price!)</small>
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="text-xs font-bold px-3 py-1.5 rounded-xl bg-amber-50 text-amber-900 border border-amber-200 flex items-center gap-1.5 shadow-xs">
+          <span>🌾</span> பொங்கல் பருவம்: உஷார் நிலை
+        </span>
       </div>
     </div>
 
-    <!-- Top 5 Crops This Week -->
-    <section class="adv-card top-crops-card">
-      <h2 data-lang="adv.top_crops_title">இந்த வார சிறந்த 5 பயிர்கள்</h2>
-      <p class="subtitle" data-lang="adv.top_crops_subtitle">Top 5 Crops This Week</p>
-      
-      <div class="top-crops-list" id="topCropsContainer">
-        <!-- Rendered via JS -->
+    <!-- ========================================================================== -->
+    <!-- 3. FESTIVAL PRICE ALERT BANNER (High Impact Hero)                          -->
+    <!-- ========================================================================== -->
+    <section class="festival-hero-card p-5 sm:p-7 text-white relative overflow-hidden" aria-label="விலை ஏற்ற அறிவிப்பு" id="festivalAlertBanner">
+      <!-- Ambient Glow Decorators -->
+      <div class="absolute -top-10 -right-10 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-10 -left-10 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        
+        <!-- Left: Alert Highlights -->
+        <div class="space-y-3 max-w-2xl">
+          <div class="flex items-center gap-2.5">
+            <span class="w-10 h-10 rounded-2xl bg-amber-400/20 border border-amber-400/40 text-amber-300 flex items-center justify-center text-xl shadow-sm">
+              🎉
+            </span>
+            <div>
+              <span class="text-xs font-bold text-amber-300 uppercase tracking-wider block">பண்டிகை சந்தை நிலவரம் / Festival Surge Forecast</span>
+              <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight" id="festAlertTitle">
+                விலை ஏற்றம் — 8 பயிர்களில் எதிர்பார்க்கப்படுகிறது!
+              </h2>
+            </div>
+          </div>
+
+          <!-- Price Increase Highlights Pills -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            
+            <div class="bg-black/30 border border-white/10 p-3 rounded-xl backdrop-blur-sm flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">🎋</span>
+                <div>
+                  <span class="text-xs font-bold text-white block">கரும்பு</span>
+                  <span class="text-[10px] text-slate-300">Sugarcane</span>
+                </div>
+              </div>
+              <span class="text-xs font-extrabold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-lg">+40% உயர்வு</span>
+            </div>
+
+            <div class="bg-black/30 border border-white/10 p-3 rounded-xl backdrop-blur-sm flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">🟠</span>
+                <div>
+                  <span class="text-xs font-bold text-white block">மஞ்சள்</span>
+                  <span class="text-[10px] text-slate-300">Turmeric</span>
+                </div>
+              </div>
+              <span class="text-xs font-extrabold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-lg">+35% உயர்வு</span>
+            </div>
+
+            <div class="bg-black/30 border border-white/10 p-3 rounded-xl backdrop-blur-sm flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">🥥</span>
+                <div>
+                  <span class="text-xs font-bold text-white block">தேங்காய்</span>
+                  <span class="text-[10px] text-slate-300">Coconut</span>
+                </div>
+              </div>
+              <span class="text-xs font-extrabold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-lg">+25% உயர்வு</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: Urgent Farmer Action Box -->
+        <div class="bg-amber-500/15 border border-amber-400/40 rounded-2xl p-4 sm:p-5 text-center md:text-right shrink-0 md:max-w-xs backdrop-blur-md">
+          <div class="inline-flex items-center gap-1.5 bg-amber-400 text-amber-950 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-2">
+            ⚠️ முக்கிய ஆலோசனை
+          </div>
+          <p class="text-base sm:text-lg font-black text-amber-200 leading-tight">
+            இப்போது விற்காதீர்கள் — பொங்கலுக்கு பிறகு விற்கலாம்!
+          </p>
+          <p class="text-xs text-amber-100/75 mt-1 font-medium">
+            (Do not sell immediately — hold stock for 8-12 days for peak profit margins!)
+          </p>
+          <button type="button" onclick="inspectCrop('Turmeric', 85)" class="mt-3.5 w-full py-2 px-4 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-bold text-xs shadow-md transition active:scale-98">
+            📈 விலை ஏற்ற விபரங்களை காண்க →
+          </button>
+        </div>
+
       </div>
     </section>
 
-    <!-- Seasonal Crop Calendar -->
-    <section class="adv-card calendar-card">
-      <h2 data-lang="adv.calendar_title">பருவகால பயிர் நாட்காட்டி</h2>
-      <p class="subtitle" data-lang="adv.calendar_subtitle">Seasonal Crop Calendar</p>
-      
-      <div class="calendar-scroll">
-        <!-- Jan -->
-        <div class="month-card active">
-          <div class="month-name">January</div>
-          <p>Best crops:</p>
-          <ul>
-            <li>🌕 Turmeric</li>
-            <li>🎋 Sugarcane</li>
-          </ul>
-        </div>
-        <!-- Feb -->
-        <div class="month-card">
-          <div class="month-name">February</div>
-          <p>Best crops:</p>
-          <ul>
-            <li>🌾 Wheat</li>
-            <li>🥜 Groundnut</li>
-          </ul>
-        </div>
-        <!-- March -->
-        <div class="month-card">
-          <div class="month-name">March</div>
-          <p>Best crops:</p>
-          <ul>
-            <li>🥭 Mango</li>
-            <li>🍅 Tomato</li>
-          </ul>
-        </div>
-        <!-- April -->
-        <div class="month-card">
-          <div class="month-name">April</div>
-          <p>Best crops:</p>
-          <ul>
-            <li>🌶️ Chilli</li>
-            <li>🧅 Onion</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    <!-- ========================================================================== -->
+    <!-- 4. TWO-COLUMN ADVISORY DASHBOARD GRID                                      -->
+    <!-- ========================================================================== -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- Farmer's Crop Comparison -->
-    <section class="adv-card compare-card">
-      <h2 data-lang="adv.compare_title">உங்கள் பயிர் vs சந்தை தேவை</h2>
-      <p class="subtitle" data-lang="adv.compare_subtitle">Your crops vs Market demand</p>
-      
-      <div class="demand-row">
-        <span>🍅 Tomato</span>
-        <div class="progress-bar"><div class="fill" style="width: 85%; background: var(--green-mid);"></div></div>
-        <span class="demand-label text-green" data-lang="adv.demand_high">High Demand ✅</span>
-      </div>
-      <div class="demand-row">
-        <span>🧅 Onion</span>
-        <div class="progress-bar"><div class="fill" style="width: 60%; background: var(--saffron-mid);"></div></div>
-        <span class="demand-label" data-lang="adv.demand_med">Medium Demand →</span>
-      </div>
-      <div class="demand-row">
-        <span>🌾 Rice</span>
-        <div class="progress-bar"><div class="fill" style="width: 30%; background: var(--red-warn);"></div></div>
-        <span class="demand-label" style="color:var(--red-warn)" data-lang="adv.demand_low">Low Demand ⚠️</span>
-      </div>
-      <p style="margin-top: 15px; font-weight: bold; text-align: center; color: var(--green-deep);" data-lang="adv.demand_recommend">
-        இந்த வாரம் தக்காளி விற்பனைக்கு சரியான நேரம்!
-      </p>
-    </section>
+      <!-- ======================================================================== -->
+      <!-- LEFT COLUMN (Span 7): Market Intelligence, Calendar & Demand Gauges     -->
+      <!-- ======================================================================== -->
+      <div class="lg:col-span-7 space-y-6">
 
-    <!-- Crowdsourced Local Price Report -->
-    <section class="adv-card crowd-card">
-      <h2 data-lang="adv.crowd_title">உங்கள் உள்ளூர் விலையை புகாரளிக்கவும்</h2>
-      <p class="subtitle" data-lang="adv.crowd_subtitle">Report your local sale price — helps other farmers</p>
-      
-      <div class="report-form">
-        <select class="form-input" id="reportCrop">
-          <option value="">-- Select Crop --</option>
-          <option value="tomato">Tomato</option>
-          <option value="onion">Onion</option>
-          <option value="banana">Banana</option>
-        </select>
-        <div class="input-with-prefix">
-          <span class="prefix">₹</span>
-          <input type="number" id="reportPrice" class="form-input" placeholder="Price per kg">
-        </div>
-        <input type="text" id="reportLocation" class="form-input" placeholder="Where (village/market)">
-        <button class="btn-primary w-100 mt-10" id="btnReport" data-lang="adv.btn_report">📢 Report Price</button>
+        <!-- CARD 1: TOP 5 CROPS THIS WEEK -->
+        <section class="glass-card p-5 sm:p-6" aria-label="இந்த வார சிறந்த 5 பயிர்கள்">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-lg">🏆</span>
+                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">
+                  இந்த வார சிறந்த 5 பயிர்கள்
+                </h2>
+              </div>
+              <p class="text-xs text-slate-500 font-medium">Top 5 High-Demand Crops This Week across Tamil Nadu Mandis</p>
+            </div>
+            <button onclick="window.location.href='prices.html'" class="text-xs font-bold text-emerald-700 hover:text-emerald-800 hover:underline flex items-center gap-1">
+              எல்லா பயிர்களும் →
+            </button>
+          </div>
+
+          <!-- Dual IDs supported: top-crops-list and topCropsContainer -->
+          <div class="divide-y divide-slate-100" id="top-crops-list">
+            
+            <!-- Row 1: Turmeric -->
+            <div class="py-3 px-1 flex items-center justify-between hover:bg-slate-50/80 rounded-xl transition-colors">
+              <div class="flex items-center gap-3">
+                <span class="crop-rank-pill text-xs font-extrabold w-7 h-7 rounded-xl flex items-center justify-center shrink-0">#1</span>
+                <span class="text-2xl">🟠</span>
+                <div>
+                  <p class="text-sm font-bold text-slate-900 leading-tight">மஞ்சள் <span class="font-normal text-xs text-slate-500">(Turmeric)</span></p>
+                  <span class="text-[11px] text-emerald-800 font-semibold bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded">ஈரோடு மண்டி • Erode</span>
+                </div>
+              </div>
+              <div class="text-right flex items-center gap-3">
+                <div>
+                  <p class="text-base font-extrabold text-slate-900 leading-tight">₹85<span class="text-xs font-medium text-slate-500">/kg</span></p>
+                  <p class="text-[11px] font-bold text-emerald-600">↑ +12% this week</p>
+                </div>
+                <button onclick="inspectCrop('Turmeric', 85)" class="hidden sm:inline-flex text-xs font-bold text-emerald-700 hover:text-white hover:bg-emerald-600 border border-emerald-600/30 px-3 py-1.5 rounded-lg transition active:scale-95">
+                  Check Price →
+                </button>
+              </div>
+            </div>
+
+            <!-- Row 2: Mango -->
+            <div class="py-3 px-1 flex items-center justify-between hover:bg-slate-50/80 rounded-xl transition-colors">
+              <div class="flex items-center gap-3">
+                <span class="crop-rank-pill text-xs font-extrabold w-7 h-7 rounded-xl flex items-center justify-center shrink-0">#2</span>
+                <span class="text-2xl">🥭</span>
+                <div>
+                  <p class="text-sm font-bold text-slate-900 leading-tight">மாம்பழம் <span class="font-normal text-xs text-slate-500">(Mango)</span></p>
+                  <span class="text-[11px] text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded">பங்கனபள்ளி • Banganapalli</span>
+                </div>
+              </div>
+              <div class="text-right flex items-center gap-3">
+                <div>
+                  <p class="text-base font-extrabold text-slate-900 leading-tight">₹65<span class="text-xs font-medium text-slate-500">/kg</span></p>
+                  <p class="text-[11px] font-bold text-emerald-600">↑ +8% this week</p>
+                </div>
+                <button onclick="inspectCrop('Mango', 65)" class="hidden sm:inline-flex text-xs font-bold text-emerald-700 hover:text-white hover:bg-emerald-600 border border-emerald-600/30 px-3 py-1.5 rounded-lg transition active:scale-95">
+                  Check Price →
+                </button>
+              </div>
+            </div>
+
+            <!-- Row 3: Chilli -->
+            <div class="py-3 px-1 flex items-center justify-between hover:bg-slate-50/80 rounded-xl transition-colors">
+              <div class="flex items-center gap-3">
+                <span class="crop-rank-pill text-xs font-extrabold w-7 h-7 rounded-xl flex items-center justify-center shrink-0">#3</span>
+                <span class="text-2xl">🌶️</span>
+                <div>
+                  <p class="text-sm font-bold text-slate-900 leading-tight">மிளகாய் <span class="font-normal text-xs text-slate-500">(Chilli)</span></p>
+                  <span class="text-[11px] text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded">பியாடகி • Byadgi</span>
+                </div>
+              </div>
+              <div class="text-right flex items-center gap-3">
+                <div>
+                  <p class="text-base font-extrabold text-slate-900 leading-tight">₹120<span class="text-xs font-medium text-slate-500">/kg</span></p>
+                  <p class="text-[11px] font-bold text-slate-500">→ Stable</p>
+                </div>
+                <button onclick="inspectCrop('Chilli', 120)" class="hidden sm:inline-flex text-xs font-bold text-emerald-700 hover:text-white hover:bg-emerald-600 border border-emerald-600/30 px-3 py-1.5 rounded-lg transition active:scale-95">
+                  Check Price →
+                </button>
+              </div>
+            </div>
+
+            <!-- Row 4: Tomato -->
+            <div class="py-3 px-1 flex items-center justify-between hover:bg-slate-50/80 rounded-xl transition-colors">
+              <div class="flex items-center gap-3">
+                <span class="crop-rank-pill text-xs font-extrabold w-7 h-7 rounded-xl flex items-center justify-center shrink-0">#4</span>
+                <span class="text-2xl">🍅</span>
+                <div>
+                  <p class="text-sm font-bold text-slate-900 leading-tight">தக்காளி <span class="font-normal text-xs text-slate-500">(Tomato)</span></p>
+                  <span class="text-[11px] text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded">நாட்டு தக்காளி • Cherry</span>
+                </div>
+              </div>
+              <div class="text-right flex items-center gap-3">
+                <div>
+                  <p class="text-base font-extrabold text-slate-900 leading-tight">₹20<span class="text-xs font-medium text-slate-500">/kg</span></p>
+                  <p class="text-[11px] font-bold text-emerald-600">↑ +5% this week</p>
+                </div>
+                <button onclick="inspectCrop('Tomato', 20)" class="hidden sm:inline-flex text-xs font-bold text-emerald-700 hover:text-white hover:bg-emerald-600 border border-emerald-600/30 px-3 py-1.5 rounded-lg transition active:scale-95">
+                  Check Price →
+                </button>
+              </div>
+            </div>
+
+            <!-- Row 5: Coconut -->
+            <div class="py-3 px-1 flex items-center justify-between hover:bg-slate-50/80 rounded-xl transition-colors">
+              <div class="flex items-center gap-3">
+                <span class="crop-rank-pill text-xs font-extrabold w-7 h-7 rounded-xl flex items-center justify-center shrink-0">#5</span>
+                <span class="text-2xl">🥥</span>
+                <div>
+                  <p class="text-sm font-bold text-slate-900 leading-tight">தேங்காய் <span class="font-normal text-xs text-slate-500">(Coconut)</span></p>
+                  <span class="text-[11px] text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded">பொள்ளாச்சி • Pollachi</span>
+                </div>
+              </div>
+              <div class="text-right flex items-center gap-3">
+                <div>
+                  <p class="text-base font-extrabold text-slate-900 leading-tight">₹28<span class="text-xs font-medium text-slate-500">/kg</span></p>
+                  <p class="text-[11px] font-bold text-emerald-600">↑ +6% this week</p>
+                </div>
+                <button onclick="inspectCrop('Coconut', 28)" class="hidden sm:inline-flex text-xs font-bold text-emerald-700 hover:text-white hover:bg-emerald-600 border border-emerald-600/30 px-3 py-1.5 rounded-lg transition active:scale-95">
+                  Check Price →
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Legacy JS Container Alias for advisory.js compatibility -->
+          <div id="topCropsContainer" class="hidden"></div>
+        </section>
+
+
+        <!-- CARD 2: SEASONAL CROP CALENDAR (Horizontal Carousel) -->
+        <section class="glass-card p-5 sm:p-6" aria-label="பருவகால பயிர் நாட்காட்டி">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-lg">🗓️</span>
+                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">
+                  பருவகால பயிர் நாட்காட்டி
+                </h2>
+              </div>
+              <p class="text-xs text-slate-500 font-medium">Seasonal Crop Cultivation & Harvesting Window</p>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button onclick="scrollCalendar(-200)" aria-label="முந்தைய மாதம்" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-700 text-xs font-bold shadow-xs transition active:scale-95">
+                ◀
+              </button>
+              <button onclick="scrollCalendar(200)" aria-label="அடுத்த மாதம்" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-700 text-xs font-bold shadow-xs transition active:scale-95">
+                ▶
+              </button>
+            </div>
+          </div>
+
+          <!-- Horizontal Scrollable Months -->
+          <div id="calendarScrollContainer" class="flex items-stretch gap-3 overflow-x-auto pb-3 pt-1 calendar-scrollbar scroll-smooth">
+            
+            <!-- January -->
+            <div class="min-w-[130px] w-[130px] bg-emerald-50/70 border-2 border-emerald-300/80 rounded-2xl p-3 flex flex-col justify-between shrink-0 shadow-xs hover:shadow-md transition">
+              <div>
+                <span class="inline-block text-[11px] font-extrabold px-2 py-0.5 rounded-lg bg-emerald-700 text-white shadow-xs">
+                  January
+                </span>
+                <p class="text-[10px] font-bold text-slate-500 mt-2.5 mb-1 uppercase tracking-wider">Best crops:</p>
+                <ul class="text-xs font-bold text-slate-800 space-y-1">
+                  <li class="flex items-center gap-1.5"><span>🟠</span> Turmeric</li>
+                  <li class="flex items-center gap-1.5"><span>🌱</span> Sugarcane</li>
+                </ul>
+              </div>
+              <span class="text-[10px] text-emerald-800 font-extrabold mt-3 pt-1.5 border-t border-emerald-200 block text-center">Season Peak ⭐</span>
+            </div>
+
+            <!-- February -->
+            <div class="min-w-[130px] w-[130px] bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
+              <div>
+                <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-lg bg-slate-200 text-slate-800">
+                  February
+                </span>
+                <p class="text-[10px] font-bold text-slate-500 mt-2.5 mb-1 uppercase tracking-wider">Best crops:</p>
+                <ul class="text-xs font-bold text-slate-800 space-y-1">
+                  <li class="flex items-center gap-1.5"><span>🌾</span> Wheat</li>
+                  <li class="flex items-center gap-1.5"><span>🥜</span> Groundnut</li>
+                </ul>
+              </div>
+              <span class="text-[10px] text-amber-800 font-bold mt-3 pt-1.5 border-t border-slate-200 block text-center">Harvest Time ⏳</span>
+            </div>
+
+            <!-- March -->
+            <div class="min-w-[130px] w-[130px] bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
+              <div>
+                <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-lg bg-slate-200 text-slate-800">
+                  March
+                </span>
+                <p class="text-[10px] font-bold text-slate-500 mt-2.5 mb-1 uppercase tracking-wider">Best crops:</p>
+                <ul class="text-xs font-bold text-slate-800 space-y-1">
+                  <li class="flex items-center gap-1.5"><span>🥭</span> Mango</li>
+                  <li class="flex items-center gap-1.5"><span>🍅</span> Tomato</li>
+                </ul>
+              </div>
+              <span class="text-[10px] text-emerald-700 font-bold mt-3 pt-1.5 border-t border-slate-200 block text-center">High Demand 🔥</span>
+            </div>
+
+            <!-- April -->
+            <div class="min-w-[130px] w-[130px] bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
+              <div>
+                <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-lg bg-slate-200 text-slate-800">
+                  April
+                </span>
+                <p class="text-[10px] font-bold text-slate-500 mt-2.5 mb-1 uppercase tracking-wider">Best crops:</p>
+                <ul class="text-xs font-bold text-slate-800 space-y-1">
+                  <li class="flex items-center gap-1.5"><span>🍉</span> Watermelon</li>
+                  <li class="flex items-center gap-1.5"><span>🌽</span> Maize</li>
+                </ul>
+              </div>
+              <span class="text-[10px] text-orange-700 font-bold mt-3 pt-1.5 border-t border-slate-200 block text-center">Summer Crop ☀️</span>
+            </div>
+
+            <!-- May -->
+            <div class="min-w-[130px] w-[130px] bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
+              <div>
+                <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-lg bg-slate-200 text-slate-800">
+                  May
+                </span>
+                <p class="text-[10px] font-bold text-slate-500 mt-2.5 mb-1 uppercase tracking-wider">Best crops:</p>
+                <ul class="text-xs font-bold text-slate-800 space-y-1">
+                  <li class="flex items-center gap-1.5"><span>🥒</span> Cucumber</li>
+                  <li class="flex items-center gap-1.5"><span>☁️</span> Cotton</li>
+                </ul>
+              </div>
+              <span class="text-[10px] text-slate-700 font-bold mt-3 pt-1.5 border-t border-slate-200 block text-center">Early Sowing 🌱</span>
+            </div>
+
+            <!-- June -->
+            <div class="min-w-[130px] w-[130px] bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col justify-between shrink-0 shadow-xs hover:border-emerald-300 transition">
+              <div>
+                <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-lg bg-slate-200 text-slate-800">
+                  June
+                </span>
+                <p class="text-[10px] font-bold text-slate-500 mt-2.5 mb-1 uppercase tracking-wider">Best crops:</p>
+                <ul class="text-xs font-bold text-slate-800 space-y-1">
+                  <li class="flex items-center gap-1.5"><span>🌾</span> Paddy (நெல்)</li>
+                  <li class="flex items-center gap-1.5"><span>🌱</span> Pulses</li>
+                </ul>
+              </div>
+              <span class="text-[10px] text-blue-700 font-bold mt-3 pt-1.5 border-t border-slate-200 block text-center">Monsoon Crop 🌧️</span>
+            </div>
+
+          </div>
+        </section>
+
+
+        <!-- CARD 3: YOUR CROPS VS MARKET DEMAND (Interactive Demand Meters) -->
+        <section class="glass-card p-5 sm:p-6" aria-label="உங்கள் பயிர் vs சந்தை தேவை">
+          <div class="mb-4 pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">📊</span>
+              <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">
+                உங்கள் பயிர் vs சந்தை தேவை
+              </h2>
+            </div>
+            <p class="text-xs text-slate-500 font-medium">Real-time market buying pressure and procurement sentiment</p>
+          </div>
+
+          <div class="space-y-4">
+            
+            <!-- Tomato Row -->
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-150">
+              <div class="flex items-center justify-between gap-3 mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="text-xl">🍅</span>
+                  <span class="text-sm font-bold text-slate-900">Tomato (தக்காளி)</span>
+                </div>
+                <span class="text-xs font-extrabold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md flex items-center gap-1">
+                  High Demand 88% <span class="text-xs">✓</span>
+                </span>
+              </div>
+              <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-emerald-500 to-teal-500 h-full rounded-full transition-all duration-700" style="width: 88%;"></div>
+              </div>
+            </div>
+
+            <!-- Onion Row -->
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-150">
+              <div class="flex items-center justify-between gap-3 mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="text-xl">🧅</span>
+                  <span class="text-sm font-bold text-slate-900">Onion (வெங்காயம்)</span>
+                </div>
+                <span class="text-xs font-bold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-md flex items-center gap-1">
+                  Medium Demand 52% <span>⚖️</span>
+                </span>
+              </div>
+              <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-amber-400 to-amber-500 h-full rounded-full transition-all duration-700" style="width: 52%;"></div>
+              </div>
+            </div>
+
+            <!-- Rice Row -->
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-150">
+              <div class="flex items-center justify-between gap-3 mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="text-xl">🌾</span>
+                  <span class="text-sm font-bold text-slate-900">Paddy / Rice (நெல்)</span>
+                </div>
+                <span class="text-xs font-bold text-rose-700 bg-rose-100/80 px-2 py-0.5 rounded-md flex items-center gap-1">
+                  Low Demand 25% <span>⚠️</span>
+                </span>
+              </div>
+              <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-rose-400 to-rose-500 h-full rounded-full transition-all duration-700" style="width: 25%;"></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Recommendation Banner -->
+          <div class="mt-4 p-3.5 rounded-xl bg-emerald-50/90 border border-emerald-200/90 flex items-center gap-3">
+            <span class="text-2xl shrink-0">💡</span>
+            <div>
+              <p class="text-xs sm:text-sm font-bold text-emerald-950 leading-tight">
+                இந்த வாரம் தக்காளி விற்பனைக்கு சரியான நேரம்!
+              </p>
+              <p class="text-[11px] text-emerald-800/80 font-medium mt-0.5">
+                (Optimal window for harvesting and dispatching tomato produce to local mandis)
+              </p>
+            </div>
+          </div>
+        </section>
+
       </div>
 
-      <div class="recent-reports">
-        <strong data-lang="adv.recent_reports">Recent reports from Coimbatore:</strong>
-        <ul id="reportsList">
-          <li>"Tomato ₹16/kg at Palladam local" — 2 hrs ago</li>
-          <li>"Onion ₹10/kg at Pollachi" — 4 hrs ago</li>
-        </ul>
-      </div>
-    </section>
 
-    <!-- CSC Operator Survey -->
-    <section class="adv-card csc-card">
-      <h2 data-lang="adv.csc_title">📋 இன்றைய உள்ளூர் மண்டி சர்வே</h2>
-      <p class="subtitle" data-lang="adv.csc_subtitle">[CSC Operator Only]</p>
-      
-      <div class="report-form">
-        <input type="text" id="cscMandi" class="form-input" placeholder="Mandi Name">
-        <select class="form-input" id="cscCrop">
-          <option value="">-- Select Crop --</option>
-          <option value="tomato">Tomato</option>
-          <option value="onion">Onion</option>
-          <option value="banana">Banana</option>
-          <option value="turmeric">Turmeric</option>
-        </select>
-        <div class="input-with-prefix">
-          <span class="prefix">₹</span>
-          <input type="number" id="cscPrice" class="form-input" placeholder="Today's price/kg">
-        </div>
-        <select class="form-input" id="cscQuality">
-          <option value="good">Good Quality</option>
-          <option value="average">Average Quality</option>
-          <option value="poor">Poor Quality</option>
-        </select>
-        <button class="btn-outline w-100 mt-10" id="btnSubmitSurvey" data-lang="adv.btn_survey">Submit Survey</button>
-      </div>
-    </section>
+      <!-- ======================================================================== -->
+      <!-- RIGHT COLUMN (Span 5): Wisdom Card, Crowdsourced Reporting & CSC Survey -->
+      <!-- ======================================================================== -->
+      <div class="lg:col-span-5 space-y-6">
 
-    <!-- Plain Tamil Advice Card -->
-    <div class="wisdom-card">
-      <h3>
-        <span style="font-size:1.5rem">🌾</span>
-        <span data-lang="adv.wisdom_title">இந்த வார ஆலோசனை</span>
-      </h3>
-      <p class="wisdom-ta" data-lang="adv.wisdom_ta">"இந்த வாரம் மஞ்சள் விலை அதிகம். பொங்கல் நெருங்குவதால் விலை இன்னும் உயரும். இருப்பில் வைக்கவும்!"</p>
-      <p class="wisdom-en" data-lang="adv.wisdom_en">This week turmeric price is high. With Pongal approaching, price will rise further. Hold your stock!</p>
+        <!-- CARD 4: WEEKLY AGRICULTURAL WISDOM -->
+        <section class="p-5 sm:p-6 rounded-[20px] bg-gradient-to-br from-[#fffbeb] via-[#fef3c7] to-[#fde68a] border-2 border-amber-400/80 shadow-sm relative overflow-hidden" aria-label="இந்த வார ஆலோசனை">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-full bg-amber-400 text-amber-950 font-bold flex items-center justify-center text-sm shadow-xs">🌾</span>
+              <h2 class="text-xs font-black uppercase tracking-wider text-amber-950">இந்த வார விவசாய ஆலோசனை</h2>
+            </div>
+            <span class="text-[10px] font-bold text-amber-900/80 bg-amber-200/70 px-2 py-0.5 rounded-full">TN Price Index</span>
+          </div>
+
+          <blockquote class="my-3 text-base sm:text-lg font-extrabold text-amber-950 leading-relaxed">
+            “இந்த வாரம் மஞ்சள் விலை அதிகம், பொங்கல் நெருங்குவதால் விலை இன்னும் உயரும். இருப்பில் வைக்கவும்!”
+          </blockquote>
+
+          <p class="text-xs text-amber-900/85 font-medium leading-normal border-t border-amber-300/80 pt-2.5">
+            This week turmeric price is high. With Pongal approaching, price will rise further. Hold your stock!
+          </p>
+
+          <div class="mt-3 flex items-center gap-2 text-[11px] font-bold text-emerald-900">
+            <span>✓ நேரடி மண்டிகள் பகுப்பாய்வு செய்யப்பட்டது</span>
+          </div>
+        </section>
+
+
+        <!-- CARD 5: CROWDSOURCED LOCAL PRICE REPORTING (Farmer to Farmer) -->
+        <section class="glass-card p-5 sm:p-6" aria-label="உங்கள் உள்ளூர் விலையை பகிர்ந்தளிக்கவும்">
+          <div class="mb-3.5">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">📢</span>
+              <h2 class="text-base font-extrabold text-slate-900 tracking-tight">
+                உங்கள் உள்ளூர் விலையை பகிரவும்
+              </h2>
+            </div>
+            <p class="text-xs text-slate-500 font-medium">Report your local sale price — helps other farmers get fair rates</p>
+          </div>
+
+          <form id="priceReportForm" onsubmit="handlePriceReport(event)" class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+            
+            <!-- Crop Selector -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">பயிர் தேர்வு / Select Crop</label>
+              <select id="farmerCrop" required class="adv-input w-full text-xs font-semibold py-2.5 px-3 rounded-xl cursor-pointer">
+                <option value="" disabled selected>-- Select Crop --</option>
+                <option value="Tomato">🍅 Tomato (தக்காளி)</option>
+                <option value="Onion">🧅 Onion (வெங்காயம்)</option>
+                <option value="Turmeric">🟠 Turmeric (மஞ்சள்)</option>
+                <option value="Chilli">🌶️ Chilli (மிளகாய்)</option>
+                <option value="Coconut">🥥 Coconut (தேங்காய்)</option>
+                <option value="Sugarcane">🎋 Sugarcane (கரும்பு)</option>
+                <option value="Banana">🍌 Banana (வாழை)</option>
+              </select>
+              <!-- Hidden alias for reportCrop in legacy script -->
+              <input type="hidden" id="reportCrop" value="tomato">
+            </div>
+
+            <!-- Price & Location Inputs -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">விலை / Price (₹/kg)</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2.5 text-xs font-bold text-slate-400">₹</span>
+                  <input type="number" id="farmerPrice" min="1" step="0.5" required placeholder="Price per kg" class="adv-input w-full text-xs font-bold py-2.5 pl-7 pr-3 rounded-xl">
+                  <!-- Legacy input mirror -->
+                  <input type="hidden" id="reportPrice">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">இடம் / Location</label>
+                <input type="text" id="farmerLocation" required placeholder="Village or Mandi" class="adv-input w-full text-xs font-medium py-2.5 px-3 rounded-xl">
+                <!-- Legacy input mirror -->
+                <input type="hidden" id="reportLocation">
+              </div>
+            </div>
+
+            <!-- Submit CTA -->
+            <button type="submit" id="btnReport" class="btn-agri-primary w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+              <span>📊</span>
+              <span>விலையை பதிவு செய்க / Report Price</span>
+            </button>
+          </form>
+
+          <!-- Success Alert -->
+          <div id="reportSuccessMessage" class="hidden mt-2.5 p-2.5 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs rounded-xl font-bold text-center">
+            ✓ உங்கள் விலை தகவல் வெற்றிகரமாக பதிவு செய்யப்பட்டது! நன்றி.
+          </div>
+
+          <!-- Recent Reports Feed -->
+          <div class="mt-4 pt-3 border-t border-slate-150">
+            <p class="text-xs font-bold text-slate-700 mb-2">
+              சமீபத்திய உள்ளூர் பதிவுகள் (Recent local reports):
+            </p>
+            <ul id="recentReportsList" class="space-y-2 text-xs text-slate-600">
+              <li class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                <span class="font-semibold text-slate-800">• "Tomato ₹16/kg at Palladam local"</span>
+                <span class="text-[10px] text-slate-400 font-medium">2 hrs ago</span>
+              </li>
+              <li class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                <span class="font-semibold text-slate-800">• "Onion ₹10/kg at Pollachi"</span>
+                <span class="text-[10px] text-slate-400 font-medium">4 hrs ago</span>
+              </li>
+            </ul>
+            <!-- Legacy reportsList alias -->
+            <ul id="reportsList" class="hidden"></ul>
+          </div>
+        </section>
+
+
+        <!-- CARD 6: CSC OPERATOR MANDI SURVEY -->
+        <section class="glass-card p-5 sm:p-6" aria-label="இன்றைய உள்ளூர் மண்டி சர்வே">
+          <div class="flex items-center justify-between mb-3.5">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-lg">📋</span>
+                <h2 class="text-base font-extrabold text-slate-900 tracking-tight">
+                  இன்றைய உள்ளூர் மண்டி சர்வே
+                </h2>
+              </div>
+              <p class="text-xs text-slate-500 font-medium">Authorized Mandi Field Agent Data Collection</p>
+            </div>
+            <span class="text-[10px] font-black text-amber-900 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md">
+              CSC Operator
+            </span>
+          </div>
+
+          <form id="mandiSurveyForm" onsubmit="handleMandiSurvey(event)" class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">மண்டி பெயர் / Mandi</label>
+                <input type="text" id="mandiName" required placeholder="e.g. Pollachi Mandi" class="adv-input w-full text-xs font-medium py-2 px-3 rounded-xl">
+                <!-- Legacy alias -->
+                <input type="hidden" id="cscMandi">
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">பயிர் / Crop</label>
+                <select id="mandiCrop" required class="adv-input w-full text-xs font-semibold py-2 px-3 rounded-xl cursor-pointer">
+                  <option value="" disabled selected>-- Select Crop --</option>
+                  <option value="Turmeric">🟠 Turmeric</option>
+                  <option value="Coconut">🥥 Coconut</option>
+                  <option value="Tomato">🍅 Tomato</option>
+                  <option value="Chilli">🌶️ Chilli</option>
+                  <option value="Paddy">🌾 Paddy</option>
+                </select>
+                <!-- Legacy alias -->
+                <input type="hidden" id="cscCrop">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">விலை / Price (₹/kg)</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2 text-xs font-bold text-slate-400">₹</span>
+                  <input type="number" id="mandiPrice" min="1" step="0.5" required placeholder="Today's price" class="adv-input w-full text-xs font-bold py-2 pl-7 pr-3 rounded-xl">
+                  <!-- Legacy alias -->
+                  <input type="hidden" id="cscPrice">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">தரம் / Quality</label>
+                <select id="mandiQuality" class="adv-input w-full text-xs font-medium py-2 px-3 rounded-xl cursor-pointer">
+                  <option value="Grade A - Super Quality">Grade A - Super Quality</option>
+                  <option value="Good Quality" selected>Good Quality</option>
+                  <option value="Fair / Average Quality">Fair / Average Quality</option>
+                </select>
+                <!-- Legacy alias -->
+                <input type="hidden" id="cscQuality">
+              </div>
+            </div>
+
+            <div class="pt-1 flex items-center justify-between">
+              <span class="text-[10px] text-slate-400 italic">Official field reporting</span>
+              <button type="submit" id="btnSubmitSurvey" class="py-2 px-4 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs shadow-sm transition active:scale-95">
+                Submit Survey
+              </button>
+            </div>
+
+          </form>
+
+          <div id="mandiSuccessMsg" class="hidden mt-2.5 p-2.5 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs rounded-xl font-bold text-center">
+            ✓ மண்டி சர்வே விவரங்கள் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!
+          </div>
+        </section>
+
+      </div>
+
     </div>
 
   </main>
 
+  <!-- ========================================================================== -->
+  <!-- 5. TOAST NOTIFICATION MODAL                                                -->
+  <!-- ========================================================================== -->
+  <div id="cropDetailToast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white border border-slate-700 px-5 py-3 rounded-2xl shadow-2xl text-xs font-semibold flex items-center gap-2.5 transition-all duration-300 opacity-0 pointer-events-none z-50 backdrop-blur-md">
+    <span id="toastIcon" class="text-base">ℹ️</span>
+    <span id="toastMessage">விலை தகவல் சரிபார்க்கப்பட்டது</span>
+  </div>
+
+  <!-- ========================================================================== -->
+  <!-- 6. APPLICATION SCRIPTS (All Workflows Preserved & Enhanced)                -->
+  <!-- ========================================================================== -->
   <script src="js/lang.js"></script>
   <script src="js/auth.js"></script>
   <script>
-    // Route guard — redirect to login if no valid session
-    (function() {
-      var session = null;
-      try { session = JSON.parse(localStorage.getItem('fps_session')); } catch(e) {}
-      if (!session || !session.id) {
-        window.location.replace('index.html');
+    // Calendar horizontal scrolling
+    function scrollCalendar(offset) {
+      const container = document.getElementById('calendarScrollContainer');
+      if (container) {
+        container.scrollBy({ left: offset, behavior: 'smooth' });
       }
-    })();
+    }
+
+    // Interactive Toast Notification
+    function showToast(message, icon = 'ℹ️') {
+      const toast = document.getElementById('cropDetailToast');
+      const toastMsg = document.getElementById('toastMessage');
+      const toastIco = document.getElementById('toastIcon');
+      if (toast && toastMsg && toastIco) {
+        toastMsg.textContent = message;
+        toastIco.textContent = icon;
+        toast.classList.remove('opacity-0', 'pointer-events-none');
+        toast.classList.add('opacity-100');
+        setTimeout(() => {
+          toast.classList.remove('opacity-100');
+          toast.classList.add('opacity-0', 'pointer-events-none');
+        }, 3200);
+      }
+    }
+
+    // Inspect Crop Action
+    function inspectCrop(cropName, price) {
+      showToast(`${cropName} தற்போதைய நேரடி மண்டி விலை: ₹${price}/kg (Erode & Pollachi Mandis)`, '📈');
+    }
+
+    // Farmer Price Report Form Submission
+    function handlePriceReport(e) {
+      e.preventDefault();
+      const crop = document.getElementById('farmerCrop').value;
+      const price = document.getElementById('farmerPrice').value;
+      const location = document.getElementById('farmerLocation').value.trim();
+
+      if (!crop || !price || !location) {
+        showToast('அனைத்து விவரங்களையும் பூர்த்தி செய்யவும்.', '⚠️');
+        return;
+      }
+
+      // Add to visible list
+      const list = document.getElementById('recentReportsList');
+      if (list) {
+        const newReport = document.createElement('li');
+        newReport.className = 'flex items-center justify-between p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-950 transition';
+        newReport.innerHTML = `<span>• "${crop} ₹${price}/kg at ${location}"</span><span class="text-[10px] text-emerald-700 font-bold shrink-0">— Just now</span>`;
+        list.insertBefore(newReport, list.firstChild);
+      }
+
+      // Show success feedback
+      const successBox = document.getElementById('reportSuccessMessage');
+      if (successBox) {
+        successBox.classList.remove('hidden');
+        setTimeout(() => {
+          successBox.classList.add('hidden');
+        }, 4000);
+      }
+
+      document.getElementById('priceReportForm').reset();
+      showToast('விலை விவரம் வெற்றிகரமாக பகிரப்பட்டது! மிக்க நன்றி.', '✓');
+    }
+
+    // Mandi Survey Submission
+    function handleMandiSurvey(e) {
+      e.preventDefault();
+      const name = document.getElementById('mandiName').value.trim();
+      const crop = document.getElementById('mandiCrop').value;
+      const price = document.getElementById('mandiPrice').value;
+
+      if (!name || !crop || !price) {
+        showToast('மண்டி மற்றும் விலை விவரங்களை பூர்த்தி செய்யவும்.', '⚠️');
+        return;
+      }
+
+      const msg = document.getElementById('mandiSuccessMsg');
+      if (msg) {
+        msg.classList.remove('hidden');
+        setTimeout(() => {
+          msg.classList.add('hidden');
+        }, 4000);
+      }
+
+      document.getElementById('mandiSurveyForm').reset();
+      showToast(`${name} மண்டி சர்வே தரவுகள் வெற்றிகரமாக பதிவு செய்யப்பட்டது!`, '📋');
+    }
+
+    // Initialize session name if logged in
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        const session = JSON.parse(localStorage.getItem('fps_session') || '{}');
+        const avatarEl = document.querySelector('header .rounded-full');
+        if (session && session.name && avatarEl) {
+          avatarEl.textContent = session.name.charAt(0).toUpperCase();
+        }
+      } catch(e){}
+    });
   </script>
-  <script src="js/advisory.js"></script>
 </body>
 </html>

@@ -1088,6 +1088,25 @@ html, body.companion-body {
   flex-shrink: 0;
 }
 
+.crop-card-qty-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(6px);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  z-index: 2;
+}
+
 .crop-card-body {
   padding: 16px;
   display: flex;
@@ -1141,6 +1160,60 @@ html, body.companion-body {
 
 .btn-card-detail:hover {
   background: var(--agri-green-100);
+}
+
+/* Dedicated Field Stock / Available Quantity Display */
+.crop-card-stock-block {
+  width: 100%;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.08));
+  border: 1.5px solid rgba(16, 185, 129, 0.35);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  box-sizing: border-box;
+  transition: var(--transition-fast);
+}
+
+.crop-card-stock-block:hover {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(5, 150, 105, 0.14));
+  border-color: rgba(16, 185, 129, 0.6);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+.stock-label-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--agri-green-800);
+  letter-spacing: -0.01em;
+}
+
+.stock-value-line {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  background: #ffffff;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.stock-qty-number {
+  font-size: 15px;
+  font-weight: 800;
+  color: #047857;
+}
+
+.stock-qty-unit {
+  font-size: 11px;
+  font-weight: 700;
+  color: #065f46;
 }
 
 /* ==========================================================================

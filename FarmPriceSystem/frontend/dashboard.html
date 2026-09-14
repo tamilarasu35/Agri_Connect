@@ -303,11 +303,11 @@
               <h3 class="section-label-header" style="font-size:18px;">🌱 Active Crops in Field</h3>
               <span style="font-size:12px; color:var(--text-muted);">Track health, growth stage & harvest readiness</span>
             </div>
-            <a href="#" class="view-all-link">See all 12 fields →</a>
+            <a href="advisory.html" class="view-all-link">Crop Advisory & Disease Guide →</a>
           </div>
 
-          <div class="carousel-scroll-wrapper">
-            <!-- Crop Card 1 -->
+          <div class="carousel-scroll-wrapper" id="cropsFieldRow">
+            <!-- Dynamically populated by renderCropCards(farmer) -->
             <div class="crop-field-card">
               <div class="crop-card-image-area" style="background-image: url('https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&w=600&q=80');">
                 <div class="crop-card-overlay">
@@ -324,7 +324,16 @@
                   <span>💧 Moisture: 65%</span>
                   <span>🌡️ Soil Temp: 28°C</span>
                 </div>
-                <button type="button" class="btn-card-detail" onclick="window.location.href='advisory.html'">View Field Details</button>
+                <div class="crop-card-stock-block">
+                  <div class="stock-label-line">
+                    <span class="stock-icon">📦</span>
+                    <span class="stock-label">கையிருப்பு அளவு / Stock:</span>
+                  </div>
+                  <div class="stock-value-line">
+                    <strong class="stock-qty-number">250</strong>
+                    <span class="stock-qty-unit">kg</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -345,7 +354,16 @@
                   <span>💧 Moisture: 80%</span>
                   <span>🌡️ Soil Temp: 26°C</span>
                 </div>
-                <button type="button" class="btn-card-detail" onclick="window.location.href='advisory.html'">View Field Details</button>
+                <div class="crop-card-stock-block">
+                  <div class="stock-label-line">
+                    <span class="stock-icon">📦</span>
+                    <span class="stock-label">கையிருப்பு அளவு / Stock:</span>
+                  </div>
+                  <div class="stock-value-line">
+                    <strong class="stock-qty-number">20</strong>
+                    <span class="stock-qty-unit">Quintal</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -366,7 +384,16 @@
                   <span>💧 Moisture: 55%</span>
                   <span>🌡️ Soil Temp: 29°C</span>
                 </div>
-                <button type="button" class="btn-card-detail" onclick="window.location.href='advisory.html'">View Field Details</button>
+                <div class="crop-card-stock-block">
+                  <div class="stock-label-line">
+                    <span class="stock-icon">📦</span>
+                    <span class="stock-label">கையிருப்பு அளவு / Stock:</span>
+                  </div>
+                  <div class="stock-value-line">
+                    <strong class="stock-qty-number">500</strong>
+                    <span class="stock-qty-unit">kg</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

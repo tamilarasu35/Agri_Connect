@@ -459,6 +459,25 @@
             <input type="hidden" id="selectedCropsInput" name="selectedCrops" value="tomato,onion,rice">
           </div>
 
+          <!-- INTERACTIVE CROP PHOTOS & QUANTITY CONFIGURATION SECTION -->
+          <div class="pt-2 pb-1" id="cropsConfigSection">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-semibold text-brand-sand/95 flex items-center gap-1.5">
+                <span class="text-brand-gold text-sm">📸</span>
+                <span id="labelCropPhotosQty">பயிர்களின் படம் & இருப்பு அளவு (Crop Photos & Quantity)</span>
+              </label>
+              <span class="text-[10px] text-brand-sprout font-bold px-2 py-0.5 rounded-full bg-brand-sprout/15 border border-brand-sprout/30" id="cropsCountBadge">3 பயிர்கள்</span>
+            </div>
+            <p class="text-[11px] text-brand-sand/65 mb-2.5" id="cropConfigSubtext">
+              தேர்ந்தெடுக்கப்பட்ட ஒவ்வொரு பயிருக்கும் உங்கள் உண்மையான பண்ணைப் படத்தை பதிவேற்றி, உங்களிடம் உள்ள இருப்பை குறிப்பிடவும்:
+            </p>
+
+            <!-- Spacious Dynamic Crop Cards List -->
+            <div id="cropCardsList" class="space-y-2.5 max-h-80 overflow-y-auto pr-1 scrollbar-thin">
+              <!-- Rendered dynamically by renderSelectedCropConfigCards() -->
+            </div>
+          </div>
+
           <!-- Field 5: Password / 4-Digit Security PIN -->
           <div>
             <label for="farmerPassword" class="block text-xs font-semibold text-brand-sand/90 mb-1.5 flex items-center justify-between">
@@ -751,6 +770,166 @@
     let currentAuthMode = 'register';
     let selectedCrops = new Set(['tomato', 'onion', 'rice']);
 
+    // REAL-TIME CROP METADATA WITH AUTHENTIC DEFAULT PHOTOS & UNITS
+    const CROP_METADATA = {
+      tomato: { emoji: '🍅', en: 'Tomato / Veg', ta: 'தக்காளி/காய்கறி', hi: 'टमाटर / सब्ज़ियाँ', photo: 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&w=600&q=80', defaultQty: 250, defaultUnit: 'kg' },
+      onion: { emoji: '🧅', en: 'Shallots / Onion', ta: 'வெங்காயம்', hi: 'प्याज', photo: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=600&q=80', defaultQty: 500, defaultUnit: 'kg' },
+      rice: { emoji: '🌾', en: 'Paddy / Rice', ta: 'நெல் / அரிசி', hi: 'धान / चावल', photo: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80', defaultQty: 20, defaultUnit: 'Quintal' },
+      wheat: { emoji: '🌿', en: 'Wheat', ta: 'கோதுமை', hi: 'गेहूं', photo: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80', defaultQty: 15, defaultUnit: 'Quintal' },
+      sugarcane: { emoji: '🎋', en: 'Sugarcane', ta: 'கரும்பு', hi: 'गन्ना', photo: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80', defaultQty: 5, defaultUnit: 'Ton' },
+      cotton: { emoji: '☁️', en: 'Cotton', ta: 'பருத்தி', hi: 'कपास', photo: 'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?auto=format&fit=crop&w=600&q=80', defaultQty: 10, defaultUnit: 'Quintal' },
+      banana: { emoji: '🍌', en: 'Banana', ta: 'வாழை', hi: 'केला', photo: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=80', defaultQty: 200, defaultUnit: 'Bags' },
+      mango: { emoji: '🥭', en: 'Mango', ta: 'மாம்பழம்', hi: 'आम', photo: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=600&q=80', defaultQty: 500, defaultUnit: 'kg' },
+      potato: { emoji: '🥔', en: 'Potato', ta: 'உருளைக்கிழங்கு', hi: 'आलू', photo: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=600&q=80', defaultQty: 15, defaultUnit: 'Quintal' },
+      chilli: { emoji: '🌶️', en: 'Chilli', ta: 'மிளகாய்', hi: 'मिर्च', photo: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?auto=format&fit=crop&w=600&q=80', defaultQty: 100, defaultUnit: 'kg' },
+      groundnut: { emoji: '🥜', en: 'Groundnut', ta: 'நிலக்கடலை', hi: 'मूंगफली', photo: 'https://images.unsplash.com/photo-1567892328221-5a043c7b6f3a?auto=format&fit=crop&w=600&q=80', defaultQty: 12, defaultUnit: 'Quintal' },
+      coconut: { emoji: '🥥', en: 'Coconut', ta: 'தென்னை', hi: 'नारियल', photo: 'https://images.unsplash.com/photo-1544376798-89aa6b82c6cd?auto=format&fit=crop&w=600&q=80', defaultQty: 1000, defaultUnit: 'Bags' },
+      turmeric: { emoji: '🟡', en: 'Turmeric', ta: 'மஞ்சள்', hi: 'हल्दी', photo: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80', defaultQty: 8, defaultUnit: 'Quintal' },
+      maize: { emoji: '🌽', en: 'Maize / Corn', ta: 'மக்காச்சோளம்', hi: 'मक्का', photo: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=80', defaultQty: 25, defaultUnit: 'Quintal' },
+      carrot: { emoji: '🥕', en: 'Carrot', ta: 'கேரட்', hi: 'गाजर', photo: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5c317?auto=format&fit=crop&w=600&q=80', defaultQty: 300, defaultUnit: 'kg' },
+      beetroot: { emoji: '🟪', en: 'Beetroot', ta: 'பீட்ரூட்', hi: 'चुकंदर', photo: 'https://images.unsplash.com/photo-1593105544559-ecb03bf76f82?auto=format&fit=crop&w=600&q=80', defaultQty: 250, defaultUnit: 'kg' },
+      radish: { emoji: '🤍', en: 'Radish', ta: 'முள்ளங்கி', hi: 'मूली', photo: 'https://images.unsplash.com/photo-1592417817098-8f3d69109853?auto=format&fit=crop&w=600&q=80', defaultQty: 200, defaultUnit: 'kg' },
+      cabbage: { emoji: '🥬', en: 'Cabbage', ta: 'முட்டைக்கோஸ்', hi: 'पत्तागोभी', photo: 'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?auto=format&fit=crop&w=600&q=80', defaultQty: 400, defaultUnit: 'kg' }
+    };
+
+    let cropsConfig = {};
+
+    function initCropsConfig() {
+      selectedCrops.forEach(cropId => {
+        if (!cropsConfig[cropId]) {
+          const meta = CROP_METADATA[cropId] || {};
+          cropsConfig[cropId] = {
+            id: cropId,
+            name: meta[currentLang] || meta.ta || cropId,
+            quantity: meta.defaultQty || 100,
+            unit: meta.defaultUnit || 'kg',
+            image: meta.photo || '',
+            customImage: false,
+            stage: 'Vegetative Stage',
+            daysToHarvest: 18,
+            health: 92
+          };
+        }
+      });
+    }
+
+    function renderSelectedCropConfigCards() {
+      const container = document.getElementById('cropCardsList');
+      const badge = document.getElementById('cropsCountBadge');
+      if (!container) return;
+
+      initCropsConfig();
+
+      if (badge) {
+        badge.textContent = `${selectedCrops.size} ${currentLang === 'ta' ? 'பயிர்கள்' : (currentLang === 'hi' ? 'फसलें' : 'Crops')}`;
+      }
+
+      const uploadText = currentLang === 'ta' ? 'படம் மாற்ற' : (currentLang === 'hi' ? 'फोटो बदलें' : 'Change Photo');
+      const qtyLabel = currentLang === 'ta' ? 'இருப்பு அளவு' : (currentLang === 'hi' ? 'मात्रा' : 'Stock Quantity');
+      const unitLabel = currentLang === 'ta' ? 'அலகு' : (currentLang === 'hi' ? 'इकाई' : 'Unit');
+
+      let html = '';
+      selectedCrops.forEach(cropId => {
+        const meta = CROP_METADATA[cropId] || {};
+        const config = cropsConfig[cropId] || {
+          id: cropId,
+          name: meta[currentLang] || meta.ta || cropId,
+          quantity: meta.defaultQty || 100,
+          unit: meta.defaultUnit || 'kg',
+          image: meta.photo || ''
+        };
+
+        const cropName = meta[currentLang] || meta.ta || cropId;
+        const cropEnName = meta.en || cropId;
+        const emoji = meta.emoji || '🌱';
+
+        html += `
+          <div class="p-3 rounded-xl border border-brand-sprout/25 bg-[#031c0c]/85 shadow-sm transition-all hover:border-brand-sprout/50" id="crop-card-item-${cropId}">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              
+              <!-- Thumbnail & Upload Trigger -->
+              <div class="relative w-full sm:w-24 h-24 sm:h-20 rounded-lg overflow-hidden flex-shrink-0 border border-brand-sprout/30 bg-black/50 group/thumb">
+                <img src="${config.image}" id="crop-img-preview-${cropId}" class="w-full h-full object-cover transition-transform duration-200 group-hover/thumb:scale-105" alt="${cropName}">
+                
+                <label for="crop-file-${cropId}" class="absolute inset-0 bg-black/60 opacity-80 sm:opacity-0 sm:group-hover/thumb:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer text-white p-1 text-center">
+                  <span class="text-sm">📷</span>
+                  <span class="text-[10px] font-medium underline mt-0.5">${uploadText}</span>
+                </label>
+                <input type="file" id="crop-file-${cropId}" accept="image/*" class="hidden" onchange="handleCropImageUpload('${cropId}', this)">
+                <span class="absolute top-1 left-1 text-[11px] bg-black/70 px-1.5 py-0.5 rounded text-white">${emoji}</span>
+                ${config.customImage ? '<span class="absolute bottom-1 right-1 text-[9px] bg-brand-leaf px-1 rounded text-white font-bold">✓ தனிப்பயன்</span>' : ''}
+              </div>
+
+              <!-- Crop Details & Form Inputs -->
+              <div class="flex-1 flex flex-col justify-between gap-1.5 min-w-0">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="truncate">
+                    <span class="text-sm font-bold text-white tracking-tight">${cropName}</span>
+                    <span class="text-[10px] text-brand-sand/60 ml-1.5 font-normal">(${cropEnName})</span>
+                  </div>
+                  <label for="crop-file-${cropId}" class="sm:hidden text-[10px] text-brand-sprout font-semibold px-2 py-0.5 rounded bg-brand-sprout/10 border border-brand-sprout/20 cursor-pointer">
+                    📷 ${uploadText}
+                  </label>
+                </div>
+
+                <!-- Quantity & Unit Inputs -->
+                <div class="grid grid-cols-12 gap-2 items-center mt-1">
+                  <div class="col-span-7">
+                    <label class="block text-[10px] text-brand-sand/75 mb-0.5 font-medium">${qtyLabel}</label>
+                    <input type="number" min="1" max="100000" value="${config.quantity}" oninput="updateCropQuantity('${cropId}', this.value)" class="glass-input w-full px-2.5 py-1 text-xs text-white font-bold rounded-lg border border-brand-sprout/30 bg-black/40">
+                  </div>
+                  <div class="col-span-5">
+                    <label class="block text-[10px] text-brand-sand/75 mb-0.5 font-medium">${unitLabel}</label>
+                    <select onchange="updateCropUnit('${cropId}', this.value)" class="glass-input w-full px-2 py-1 text-xs text-brand-sand font-semibold rounded-lg border border-brand-sprout/30 bg-[#062410] cursor-pointer">
+                      <option value="kg" ${config.unit === 'kg' ? 'selected' : ''}>kg (கிலோ)</option>
+                      <option value="Quintal" ${config.unit === 'Quintal' ? 'selected' : ''}>Quintal (குவிண்டால்)</option>
+                      <option value="Ton" ${config.unit === 'Ton' ? 'selected' : ''}>Ton (டன்)</option>
+                      <option value="Bags" ${config.unit === 'Bags' ? 'selected' : ''}>Bags (மூட்டை)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function handleCropImageUpload(cropId, input) {
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        const base64Img = e.target.result;
+        if (!cropsConfig[cropId]) initCropsConfig();
+        cropsConfig[cropId].image = base64Img;
+        cropsConfig[cropId].customImage = true;
+
+        const preview = document.getElementById(`crop-img-preview-${cropId}`);
+        if (preview) preview.src = base64Img;
+
+        renderSelectedCropConfigCards();
+        showToast("📷 பயிர் படம் வெற்றிகரமாக சேர்க்கப்பட்டது! / Photo updated!", "success");
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    function updateCropQuantity(cropId, val) {
+      if (!cropsConfig[cropId]) initCropsConfig();
+      const num = parseFloat(val);
+      cropsConfig[cropId].quantity = !isNaN(num) ? num : val;
+    }
+
+    function updateCropUnit(cropId, unit) {
+      if (!cropsConfig[cropId]) initCropsConfig();
+      cropsConfig[cropId].unit = unit;
+    }
+
     // LANGUAGE SWITCHER FUNCTION
     function setLanguage(lang) {
       currentLang = lang;
@@ -814,6 +993,8 @@
         }
       });
 
+      renderSelectedCropConfigCards();
+
       // Save preference in localStorage
       try {
         localStorage.setItem('agriconnect_lang', lang);
@@ -870,6 +1051,7 @@
       }
 
       document.getElementById('selectedCropsInput').value = Array.from(selectedCrops).join(',');
+      renderSelectedCropConfigCards();
     }
 
     // REAL GPS LOCATION DETECTION WITH HIGH ACCURACY & OPENSTREETMAP REVERSE GEOCODING
@@ -982,12 +1164,32 @@
 
       showToast("🎉 விவசாயி பதிவு வெற்றிகரமாக முடிந்தது! பண்ணைக்குள் நுழைகிறது...", "success");
 
+      // Pull exact live values from input and select elements in the DOM for each selected crop
+      selectedCrops.forEach(cId => {
+        const qtyEl = document.querySelector(`#crop-card-item-${cId} input[type="number"]`);
+        const unitEl = document.querySelector(`#crop-card-item-${cId} select`);
+        if (!cropsConfig[cId]) initCropsConfig();
+        if (qtyEl && qtyEl.value !== '') {
+          const parsed = parseFloat(qtyEl.value);
+          cropsConfig[cId].quantity = !isNaN(parsed) ? parsed : (CROP_METADATA[cId]?.defaultQty || 100);
+        }
+        if (unitEl && unitEl.value) {
+          cropsConfig[cId].unit = unitEl.value;
+        }
+      });
+
+      const cropsData = Array.from(selectedCrops).map(cId => {
+        if (!cropsConfig[cId]) initCropsConfig();
+        return cropsConfig[cId];
+      });
+
       const farmerObj = {
         id: 'F' + Date.now(),
         name: name,
         phone: phone,
         location: loc,
         crops: crops,
+        cropsData: cropsData,
         pin: password,
         password: password,
         role: 'farmer',
@@ -1005,6 +1207,7 @@
         localStorage.setItem('agriconnect_farmer_phone', phone);
         localStorage.setItem('agriconnect_farmer_name', name);
         localStorage.setItem('agriconnect_farmer_location', loc);
+        localStorage.setItem('agriconnect_farmer_crops_data', JSON.stringify(cropsData));
         localStorage.setItem('fps_session', JSON.stringify(farmerObj));
         
         let farmers = [];
@@ -1034,6 +1237,25 @@
         return;
       }
 
+      // Pull exact live values from input and select elements in the DOM for each selected crop
+      selectedCrops.forEach(cId => {
+        const qtyEl = document.querySelector(`#crop-card-item-${cId} input[type="number"]`);
+        const unitEl = document.querySelector(`#crop-card-item-${cId} select`);
+        if (!cropsConfig[cId]) initCropsConfig();
+        if (qtyEl && qtyEl.value !== '') {
+          const parsed = parseFloat(qtyEl.value);
+          cropsConfig[cId].quantity = !isNaN(parsed) ? parsed : (CROP_METADATA[cId]?.defaultQty || 100);
+        }
+        if (unitEl && unitEl.value) {
+          cropsConfig[cId].unit = unitEl.value;
+        }
+      });
+
+      const currentCropsData = Array.from(selectedCrops).map(cId => {
+        if (!cropsConfig[cId]) initCropsConfig();
+        return cropsConfig[cId];
+      });
+
       let farmers = [];
       try { farmers = JSON.parse(localStorage.getItem('fps_farmers') || '[]'); } catch(err){}
       
@@ -1048,16 +1270,22 @@
         }
         farmer.pin = password;
         farmer.password = password;
+        // Sync configured crops from the page into farmer profile
+        if (currentCropsData && currentCropsData.length > 0) {
+          farmer.crops = Array.from(selectedCrops);
+          farmer.cropsData = currentCropsData;
+        }
       } else {
         // First-time login for this phone number: register account with entered password
         const savedName = localStorage.getItem('agriconnect_farmer_name') || 'Tamilarasu';
-        const savedLoc = localStorage.getItem('agriconnect_farmer_location') || 'மதுரை, வாடிப்பட்டி';
+        const savedLoc = localStorage.getItem('agriconnect_farmer_location') || 'புதுக்கரைப்புதூர், கோபிசெட்டிபாளையம்';
         farmer = {
           id: 'F' + Date.now(),
           name: savedName,
           phone: phone,
           location: savedLoc,
           crops: Array.from(selectedCrops),
+          cropsData: currentCropsData,
           pin: password,
           password: password,
           role: 'farmer',
@@ -1065,8 +1293,8 @@
           certifiedStatus: true
         };
         farmers.push(farmer);
-        localStorage.setItem('fps_farmers', JSON.stringify(farmers));
       }
+      localStorage.setItem('fps_farmers', JSON.stringify(farmers));
 
       if (window.Auth && typeof window.Auth.login === 'function') {
         window.Auth.login(phone, password);
@@ -1078,6 +1306,10 @@
         localStorage.setItem('agriconnect_farmer_phone', phone);
         localStorage.setItem('agriconnect_farmer_name', farmer.name);
         localStorage.setItem('agriconnect_farmer_location', farmer.location);
+        const finalCrops = farmer.cropsData || currentCropsData;
+        if (finalCrops) {
+          localStorage.setItem('agriconnect_farmer_crops_data', JSON.stringify(finalCrops));
+        }
         localStorage.setItem('fps_session', JSON.stringify(farmer));
       } catch(e){}
 
@@ -1109,13 +1341,43 @@
       }, 3500);
     }
 
-    // Initialize with default or saved language
+    // Initialize with default or saved language and restore previous crop configuration if present
     document.addEventListener('DOMContentLoaded', () => {
       let savedLang = 'ta';
       try {
         savedLang = localStorage.getItem('agriconnect_lang') || 'ta';
       } catch(e){}
+
+      try {
+        const savedCropsData = JSON.parse(localStorage.getItem('agriconnect_farmer_crops_data') || 'null');
+        if (savedCropsData && Array.isArray(savedCropsData) && savedCropsData.length > 0) {
+          selectedCrops.clear();
+          savedCropsData.forEach(c => {
+            if (c && c.id) {
+              selectedCrops.add(c.id);
+              cropsConfig[c.id] = c;
+            }
+          });
+          document.querySelectorAll('.crop-chip-btn').forEach(btn => {
+            const cropKey = btn.dataset.crop;
+            const checkmark = btn.querySelector('.checkmark');
+            if (selectedCrops.has(cropKey)) {
+              btn.classList.add('selected');
+              btn.classList.remove('text-brand-sand/80', 'border-white/10');
+              if (checkmark) { checkmark.classList.remove('opacity-0'); checkmark.classList.add('opacity-75'); }
+            } else {
+              btn.classList.remove('selected');
+              btn.classList.add('text-brand-sand/80', 'border-white/10');
+              if (checkmark) { checkmark.classList.remove('opacity-75'); checkmark.classList.add('opacity-0'); }
+            }
+          });
+          const hiddenInput = document.getElementById('selectedCropsInput');
+          if (hiddenInput) hiddenInput.value = Array.from(selectedCrops).join(',');
+        }
+      } catch(e){}
+
       setLanguage(savedLang);
+      renderSelectedCropConfigCards();
     });
   </script>
 </body>

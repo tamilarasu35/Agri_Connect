@@ -497,40 +497,126 @@ const Dashboard = (() => {
     }
   }
 
+  // DEFAULT AUTHENTIC CROP PHOTOS FOR ALL 18 MANDI CROPS
+  const DEFAULT_CROP_PHOTOS = {
+    tomato: 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&w=600&q=80',
+    onion: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=600&q=80',
+    rice: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80',
+    wheat: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80',
+    sugarcane: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80',
+    cotton: 'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?auto=format&fit=crop&w=600&q=80',
+    banana: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=80',
+    mango: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=600&q=80',
+    potato: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=600&q=80',
+    chilli: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?auto=format&fit=crop&w=600&q=80',
+    groundnut: 'https://images.unsplash.com/photo-1567892328221-5a043c7b6f3a?auto=format&fit=crop&w=600&q=80',
+    coconut: 'https://images.unsplash.com/photo-1544376798-89aa6b82c6cd?auto=format&fit=crop&w=600&q=80',
+    turmeric: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=600&q=80',
+    maize: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=80',
+    carrot: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5c317?auto=format&fit=crop&w=600&q=80',
+    beetroot: 'https://images.unsplash.com/photo-1593105544559-ecb03bf76f82?auto=format&fit=crop&w=600&q=80',
+    radish: 'https://images.unsplash.com/photo-1592417817098-8f3d69109853?auto=format&fit=crop&w=600&q=80',
+    cabbage: 'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?auto=format&fit=crop&w=600&q=80'
+  };
+
   // ============================
-  // RENDER CROP CARDS (Section 5)
+  // RENDER CROP CARDS (Section 5 & Active Field Carousel)
   // ============================
   function renderCropCards(farmer) {
-    const row = document.getElementById('cropsScrollRow');
+    const row = document.getElementById('cropsFieldRow') || document.getElementById('cropsScrollRow');
     if (!row) return;
 
-    const crops = farmer.crops || [];
-    if (crops.length === 0) {
-      row.innerHTML = `<div style="padding: 20px; color: var(--text-muted);">${Lang.get('dashboard.no_crops') || 'No crops selected'}</div>`;
+    // Retrieve cropsData: Prioritize direct user configuration saved from login/registration
+    let cropsData = null;
+    try {
+      const stored = localStorage.getItem('agriconnect_farmer_crops_data');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          cropsData = parsed;
+        }
+      }
+    } catch(e) {}
+
+    // Next check farmer.cropsData
+    if ((!cropsData || !cropsData.length) && farmer && farmer.cropsData && Array.isArray(farmer.cropsData) && farmer.cropsData.length > 0) {
+      cropsData = farmer.cropsData;
+    }
+
+    // Fallback: If only crop ID array farmer.crops exists
+    if ((!cropsData || !cropsData.length) && farmer && farmer.crops && Array.isArray(farmer.crops) && farmer.crops.length > 0) {
+      cropsData = farmer.crops.map((cId, idx) => {
+        return {
+          id: cId,
+          name: Lang.get(`crop.${cId}`) || cId,
+          quantity: 100,
+          unit: 'kg',
+          image: DEFAULT_CROP_PHOTOS[cId] || DEFAULT_CROP_PHOTOS['tomato'],
+          stage: idx % 2 === 0 ? 'Vegetative Stage' : 'Flowering Stage',
+          daysToHarvest: 14 + (idx * 7) % 28,
+          health: 90 + (idx * 2) % 9
+        };
+      });
+    }
+
+    if (!cropsData || cropsData.length === 0) {
+      row.innerHTML = `<div style="padding: 24px; color: var(--text-muted); text-align: center;">${Lang.get('dashboard.no_crops') || 'No active crops selected'}</div>`;
       return;
     }
 
     row.innerHTML = '';
 
-    crops.forEach(cropId => {
-      const data = PRICE_DATA[cropId];
-      if (!data) return;
+    cropsData.forEach((crop, idx) => {
+      const cropId = crop.id || (typeof crop === 'string' ? crop : 'tomato');
+      const cropImg = crop.image || DEFAULT_CROP_PHOTOS[cropId] || DEFAULT_CROP_PHOTOS['tomato'];
+      const qtyNum = (crop.quantity !== undefined && crop.quantity !== null && crop.quantity !== '') ? crop.quantity : 100;
+      const unitStr = crop.unit || 'kg';
+      const qtyText = `${qtyNum} ${unitStr}`;
 
-      const change = data.price - data.yesterday;
-      const changePercent = ((Math.abs(change) / data.yesterday) * 100).toFixed(0);
-      const trend = change > 0 ? 'up' : change < 0 ? 'down' : 'neutral';
-      const trendArrow = trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→';
-      const cropName = Lang.get(`crop.${cropId}`) || cropId;
-      const emoji = CROP_EMOJI[cropId] || '🌱';
+      let cropName = crop.name;
+      if (!cropName || cropName === cropId) {
+        cropName = Lang.get(`crop.${cropId}`) || cropId;
+      }
+
+      const stage = crop.stage || (idx % 2 === 0 ? 'Vegetative Stage' : 'Maturation Stage');
+      const health = crop.health || (90 + (idx * 3) % 9);
+      const days = crop.daysToHarvest || (14 + (idx * 6) % 25);
+      const moisture = 55 + (idx * 7) % 28;
+      const soilTemp = 26 + (idx * 2) % 5;
 
       const card = document.createElement('div');
-      card.className = 'crop-card';
+      card.className = 'crop-field-card';
       card.innerHTML = `
-        <div class="crop-card__emoji">${emoji}</div>
-        <div class="crop-card__name">${cropName}</div>
-        <div class="crop-card__price">₹${data.price}/kg</div>
-        <div class="crop-card__trend ${trend}">${trendArrow} ${change > 0 ? '+' : ''}${changePercent}%</div>
-        <button class="btn-check-price" onclick="window.location.href='prices.html'">${Lang.get('dashboard.check_price') || 'Check Price'} →</button>
+        <div class="crop-card-image-area" style="background-image: url('${cropImg}'); background-size: cover; background-position: center;">
+          <div class="crop-card-overlay">
+            <span class="crop-stage-badge">🌱 ${stage}</span>
+            <div class="health-score-ring">${health}%</div>
+          </div>
+          <div class="crop-card-qty-badge">
+            <span style="font-size:12px;">⚖️</span>
+            <strong>${qtyText}</strong>
+          </div>
+        </div>
+        <div class="crop-card-body">
+          <div class="crop-card-title-row">
+            <span class="crop-card-name">${cropName}</span>
+            <span class="days-harvest-tag">⏳ ${days} Days</span>
+          </div>
+          <div class="crop-details-box">
+            <span>💧 Moisture: ${moisture}%</span>
+            <span>🌡️ Soil Temp: ${soilTemp}°C</span>
+          </div>
+          <div class="crop-card-stock-block">
+            <div class="stock-label-line">
+              <span class="stock-icon">📦</span>
+              <span class="stock-label">கையிருப்பு அளவு / Stock:</span>
+            </div>
+            <div class="stock-value-line">
+              <strong class="stock-qty-number">${qtyNum}</strong>
+              <span class="stock-qty-unit">${unitStr}</span>
+            </div>
+          </div>
+        </div>
       `;
       row.appendChild(card);
     });
